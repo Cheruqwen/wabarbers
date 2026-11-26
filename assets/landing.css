@@ -5,7 +5,7 @@
 :root{
   --hm-ink:#F4F5F6;--hm-dark:#0B0C0E;--hm-pad:clamp(18px,5vw,56px);--hm-max:1180px;--hm-sec:clamp(56px,8vw,104px);
   --gold:#C9A45C;--gold-hi:#F3E3B3;--gold-lo:#8C6A2F;
-  --gold-grad:linear-gradient(135deg,#F6E8BC 0%,#D8B66F 28%,#B48C46 55%,#E6CD92 80%,#C39B55 100%);
+  --gold-grad:linear-gradient(135deg,#F1DFA6 0%,#DDBD78 40%,#CDA862 70%,#E4C988 100%);--gold-ink:#16110A;
 }
 
 /* ---------- page frame ---------- */

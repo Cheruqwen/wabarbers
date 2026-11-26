@@ -182,3 +182,47 @@
 .at-home .shot{border-color:rgba(201,164,92,.5);background:repeating-linear-gradient(135deg,rgba(201,164,92,.12) 0 1px,transparent 1px 11px),linear-gradient(160deg,var(--surface),color-mix(in srgb,#C9A45C 14%,var(--surface)))}
 .at-home .shot::before{color:var(--gold)}
 .at-home .shot-tag{background:var(--gold-grad);color:#0B0C0E}
+/* ---------- service menu bar (second row of the header) ---------- */
+.svcnav .wrap{display:flex;gap:8px;min-height:0!important;padding-top:2px!important;padding-bottom:12px!important;overflow-x:auto;scrollbar-width:none;align-items:center}
+.svcnav .wrap::-webkit-scrollbar{display:none}
+.sn-i{flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;min-height:46px;padding:0 16px 0 6px;border-radius:999px;color:inherit;text-decoration:none;font:600 14.5px/1 var(--f-house);letter-spacing:0;text-transform:none;white-space:nowrap;
+  background:color-mix(in srgb,currentColor 9%,transparent);border:1px solid color-mix(in srgb,currentColor 18%,transparent);transition:background-color .2s,border-color .2s,color .2s}
+.sn-ic{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,currentColor 14%,transparent)}
+.sn-ic .ic{width:20px;height:20px}
+.sn-i.ww .sn-ic{background:linear-gradient(135deg,#4FB0FF,#0A6FDB);color:#fff}
+.sn-i.wab .sn-ic{background:var(--gold-grad);color:var(--gold-ink)}
+.sn-i.cs .sn-ic{background:#FF7A1A;color:#160A00}
+.sn-i.ph .sn-ic{background:#F4C2D4;color:#3B1F2B}
+@media (hover:hover){.sn-i:hover{background:color-mix(in srgb,currentColor 16%,transparent);border-color:color-mix(in srgb,currentColor 35%,transparent)}}
+.sn-i[aria-current]{background:var(--brand-ink);color:var(--brand);border-color:transparent;font-weight:700}
+.sn-i:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+[data-brand="wab"]:not(#_) .svcnav .wrap{padding-bottom:18px!important}
+[data-brand="wab"]:not(#_) .sn-i{border-radius:2px}
+[data-brand="wab"]:not(#_) .sn-i[aria-current]{background:var(--gold-grad);color:var(--gold-ink)}
+[data-brand="wab"]:not(#_) .sn-i[aria-current].wab .sn-ic{background:var(--gold-ink);color:#E4C988}
+[data-brand="ww"]:not(#_) .sn-i[aria-current]{background:#FFFFFF;color:var(--ww-deep-ocean)}
+@media (min-width:1000px){.has-nav .paybar{top:146px}.svcnav .wrap{justify-content:flex-start}}
+.has-nav .hm-top{padding-top:calc(var(--header-h) + 60px + clamp(36px,5vw,64px))}
+.at-home .svcnav{color:var(--hm-ink)}
+.at-home .sn-i[aria-current]{background:var(--gold-grad);color:var(--gold-ink)}
+
+/* ---------- gold that reads: bigger, bolder text on gold, near-black ink ---------- */
+.hm-doors .pk.wab .pk-cta,.pk.wab .pk-cta,[data-brand="wab"]:not(#_) .paybar [data-act=submit],[data-brand="wab"]:not(#_) .btn.primary,[data-brand="wab"]:not(#_) .btn.accent{color:var(--gold-ink);font:700 14.5px/1 var(--f-house);letter-spacing:.12em;text-shadow:0 1px 0 rgba(255,255,255,.25)}
+.hm-club[data-brand="wab"] .hm-club-a{color:var(--gold-ink);font:700 13px/1 var(--f-house);letter-spacing:.12em}
+.hm-btn.gold{color:var(--gold-ink);font-weight:800}
+.shot-tag{font-size:11.5px;letter-spacing:.08em}
+[data-brand="wab"]:not(#_) .shot-tag,.at-home .shot-tag{color:var(--gold-ink)}
+[data-brand="wab"]:not(#_) .svc-ic,[data-brand="wab"]:not(#_) .step>h2 i.st{color:var(--gold-ink)}
+/* small gold words: solid light gold, a touch larger */
+[data-brand="wab"]:not(#_) .sgroup>h3{font:600 12.5px/1.2 var(--f-house);letter-spacing:.2em;color:#E1C27F}
+[data-brand="wab"]:not(#_) .field label,[data-brand="wab"]:not(#_) .lbl{font:600 12px/1.3 var(--f-house);letter-spacing:.14em;color:#CDBFA4}
+[data-brand="wab"]:not(#_) .lb-ic{color:#E1C27F}
+[data-brand="wab"]:not(#_) .pb-head,[data-brand="wab"]:not(#_) .pb-trust{color:#D9BE85}
+.pk.wab .pk-t small,.hm-club[data-brand="wab"] .hm-club-k{color:#E1C27F}
+[data-brand="wab"]:not(#_) .add-more{color:#E1C27F;font-size:12.5px;font-weight:600}/* keep the banner words on a clean dark field, the photo shows on the right */
+.bcard.wab{background-image:linear-gradient(90deg,#0b0a08 40%,rgba(11,10,8,.75) 62%,rgba(11,10,8,.15)),url(brand/dusk.jpg)}
+.bcard.ww{background-image:linear-gradient(90deg,var(--ww-deep-ocean) 36%,rgba(4,27,52,.7) 60%,rgba(4,27,52,.1)),url(brand/dusk.jpg)}
+@media (max-width:640px){
+  .bcard.wab{background-image:linear-gradient(90deg,#0b0a08 58%,rgba(11,10,8,.6) 82%,rgba(11,10,8,.2)),url(brand/dusk.jpg)}
+  .bcard.ww{background-image:linear-gradient(90deg,var(--ww-deep-ocean) 52%,rgba(4,27,52,.6) 80%,rgba(4,27,52,.2)),url(brand/dusk.jpg)}
+}

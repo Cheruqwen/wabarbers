@@ -110,9 +110,28 @@ function render() {
   $('#paybar').hidden = !(S.view === 'book' && !S.done && !(S.token && !S.portal) && S.form && S.form.tab);
   document.body.classList.toggle('at-pick', S.view === 'book' && !S.done && !!S.form && !S.form.tab);
   document.body.classList.toggle('at-home', isHome());
+  renderNav();
   if (!$('#paybar').hidden) renderPaybar();
   S.pop = null; if (S.form) S.lastTab = S.form.tab;
   reveal();
+}
+
+/* ---------- service menu: one tap to any service, from any booking page ---------- */
+const NAV_ORDER = ['wash', 'kinyozi', 'carpet', 'garage', 'nails'];
+function renderNav() {
+  const nav = $('#svcnav'); if (!nav) return;
+  const on = S.view === 'book' && !S.done && !!S.form && !(S.token && !S.portal);
+  nav.hidden = !on; document.body.classList.toggle('has-nav', on);
+  if (!on) return;
+  const ds = depts().slice().sort((a, b) => (NAV_ORDER.indexOf(a.key) + 99) % 99 - (NAV_ORDER.indexOf(b.key) + 99) % 99);
+  const cur = F().tab || '';
+  const item = (v, icon, label, b) => '<a class="sn-i' + (b ? ' ' + b : '') + '" href="' + (v ? pickHref(v) : '#') + '" data-act="pick" data-v="' + v + '"' + (cur === v ? ' aria-current="page"' : '') + '>'
+    + '<span class="sn-ic">' + ic(icon) + '</span><span>' + esc(label) + '</span></a>';
+  const html = item('', 'grid', 'All') + ds.map(d => item(d.key, DEPT_IC[d.key] || 'check', d.name, BRAND[d.key] || '')).join('');
+  const w = nav.firstElementChild;
+  if (w.dataset.k !== html) { w.dataset.k = html; w.innerHTML = html; }
+  else w.querySelectorAll('.sn-i').forEach(a => { if (a.dataset.v === cur) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  const a = w.querySelector('[aria-current]'); if (a && w.scrollWidth > w.clientWidth) a.scrollIntoView({ inline: 'center', block: 'nearest' });
 }
 
 /* ---------- reveal on scroll ----------
