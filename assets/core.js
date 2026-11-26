@@ -81,7 +81,7 @@ export const DEPT = {
 export const BRAND = { wash: 'ww', carpet: 'ww', kinyozi: 'wab', garage: 'cs', nails: 'ph' };
 export const BRANDS = {
   ww: { name: 'Whale Wash', line: 'Car wash & carpet cleaning', mark: 'brand/ww-mark-dark.png', theme: '#041B34' },
-  wab: { name: 'WaBarbers', line: 'Classic grooming for modern men', mark: 'brand/wb-mark-dark.png', word: 'brand/wb-wordmark-dark.png', theme: '#0B0B0B' },
+  wab: { name: 'WaBarbers', line: 'Classic grooming for modern men', mark: 'brand/wb-mark-dark.png', word: 'brand/wb-wordmark-dark.png', theme: '#0B0A08' },
   cs: { name: 'PitStop 87', line: 'Car service & repairs', mark: 'brand/cs-mark.svg', theme: '#0B0C0E' },
   ph: { name: 'Pearl Her', line: 'Nail studio', mark: 'brand/ph-mark.svg', theme: '#F8D3E0' },
 };
@@ -89,7 +89,7 @@ export function setBrand(b) {
   const r = document.documentElement;
   if (b && BRANDS[b]) r.dataset.brand = b; else delete r.dataset.brand;
   const m = document.querySelector('meta[name="theme-color"]');
-  if (m) m.content = (BRANDS[b] || BRANDS.ww).theme;
+  if (m) m.content = BRANDS[b] ? BRANDS[b].theme : '#121417';
   // the browser-tab icon follows the brand too (paths resolve next to the default icon in assets/)
   const ic = document.querySelector('link[rel="icon"]');
   if (ic) {

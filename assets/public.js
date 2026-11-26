@@ -92,6 +92,7 @@ function render() {
   document.title = b === 'cs' ? 'Car service · ' + biz : b ? BRANDS[b].name + ' · ' + biz : biz;
   $('#paybar').hidden = !(S.view === 'book' && !S.done && !(S.token && !S.portal) && S.form && S.form.tab);
   document.body.classList.toggle('at-pick', S.view === 'book' && !S.done && !!S.form && !S.form.tab);
+  document.body.classList.toggle('at-home', isHome());
   if (!$('#paybar').hidden) renderPaybar();
   S.pop = null; if (S.form) S.lastTab = S.form.tab;
   reveal();
@@ -195,10 +196,12 @@ function deptSummary(k) {
   const gs = svcGroups(k).filter(g => g.name && g.name !== 'Add-on');
   const what = (gs.length ? gs.map(g => g.name) : ss.map(s => s.name)).slice(0, 3).join(' · ');
   const ps = ss.map(s => s.price).filter(Boolean);
+  // both front-door panels show three rows, so they stand level: groups first, then single services
+  const loose = svcGroups(k).filter(g => !g.name).flatMap(g => g.items.map(({ s, item }) => ({ name: item, price: s.price, from: false })));
   const rows = gs.length
-    ? gs.map(g => { const p = g.items.map(i => i.s.price).filter(Boolean); const lo = p.length ? Math.min(...p) : 0; return { name: g.name, price: lo, from: p.some(v => v !== lo) }; })
+    ? gs.map(g => { const p = g.items.map(i => i.s.price).filter(Boolean); const lo = p.length ? Math.min(...p) : 0; return { name: g.name, price: lo, from: p.some(v => v !== lo) }; }).concat(loose)
     : ss.map(s => ({ name: s.name, price: s.price, from: false }));
-  return { what, from: ps.length ? Math.min(...ps) : 0, rows: rows.slice(0, 4) };
+  return { what, from: ps.length ? Math.min(...ps) : 0, rows: rows.slice(0, 3) };
 }
 function viewPick() {
   // the first screen is only the doors: two big tiles, then round buttons for everything else
@@ -222,10 +225,50 @@ function viewPick() {
   const back = fd.includes(S.lastTab) ? S.lastTab : fd[0];
   const cont = n ? '<div class="pk-cont"><span><b>' + n + (n === 1 ? ' service' : ' services') + '</b> in your booking</span><a class="btn primary" href="' + pickHref(back) + '" data-act="pick" data-v="' + back + '">Continue booking</a></div>' : '';
   const hi = f.portal ? 'Welcome back, ' + first(S.portal.customer.name) + '. ' : '';
+  if (isHome()) return viewHome(main, more, big, small);
   return '<section class="pick"><div class="pk-head"><h1>' + esc(n ? 'Add another service' : hi + 'What do you need today?') + '</h1></div>' + cont
     + (main.length ? '<div class="pk-main">' + main.map(big).join('') + '</div>' : '')
     + (more.length ? (main.length ? '<h2 class="pk-sub">More services</h2>' : '') + '<div class="pk-more">' + more.map(small).join('') + '</div>' : '')
     + (f.portal ? '<a class="link pk-back" href="#me/' + esc(S.token) + '">Back to your page</a>' : '') + '</section>';
+}
+/* ---------- home: the editorial front page ----------
+   Shown only to a first-time visitor on the plain front door (no services picked yet, not a customer link).
+   Everything on it comes from the catalogue, so prices, plans and pickup areas stay true. */
+const isHome = () => S.view === 'book' && !S.done && !S.token && !!S.form && !S.form.tab && !S.form.lines.length;
+function viewHome(main, more, big, small) {
+  const has = k => main.some(d => d.key === k);
+  const cta = (k, label) => has(k) ? '<a class="hm-btn ' + BRAND[k] + '" href="#s/' + k + '" data-act="pick" data-v="' + k + '">' + label + ' <span aria-hidden="true">→</span></a>' : '';
+  // the ticker: every group and single service on the menu, once each
+  const names = []; depts().forEach(d => svcGroups(d.key).forEach(g => { if (g.name === 'Add-on') return; (g.name ? [g.name] : g.items.map(x => x.item)).forEach(n => { if (!names.includes(n)) names.push(n); }); }));
+  const tick = names.map(n => '<span>' + esc(n) + '</span>').join('');
+  const zones = (S.cat.zones || []).map(z => z.name).filter(Boolean);
+  const where = zones.length ? 'our valet collects from ' + (zones.length > 3 ? zones.slice(0, 3).join(', ') + ' and nearby' : zones.length > 1 ? zones.slice(0, -1).join(', ') + ' and ' + zones[zones.length - 1] : zones[0]) : 'our valet collects it and brings it back clean';
+  const plans = (S.cat.plans || []).filter(p => depts().some(d => d.key === p.dept));
+  const club = p => { const b = BRAND[p.dept] || '';
+    return '<article class="hm-club"' + (b === 'ww' || b === 'wab' ? ' data-brand="' + b + '"' : '') + '><span class="hm-club-k">' + esc(b ? BRANDS[b].name : deptName(p.dept)) + '</span><h3>' + esc(p.name) + '</h3>'
+      + '<p class="hm-club-p"><b>' + num(p.price) + '</b><small>KES / ' + (p.days === 30 ? 'month' : p.days + ' days') + '</small></p><p class="hm-club-d">' + esc(p.perks || (p.allowance + ' visits')) + '</p>'
+      + (bizWa() ? '<a class="hm-club-a" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Ask to join <span aria-hidden="true">→</span></a>' : '') + '</article>'; };
+  const steps = [
+    ['Pick a service and a time', 'See every price before you book, then choose a slot between 07:00 and 19:00, any day of the week.'],
+    ['Come in, or we come to you', 'Drive into the bay, or ' + where + '.'],
+    ['Follow it live, then pay', 'You get a booking code and a live tracking link. Pay by M-Pesa, cash or card when the work is done.'],
+  ];
+  return '<section class="hm-hero hm-bleed" aria-labelledby="hm-h1"><div class="hm-photo" aria-hidden="true"></div><div class="hm-in hm-hero-in">'
+      + '<p class="hm-eye"><i></i>' + esc(S.cat.business || 'PitStop 87') + ' · Car wash · Kinyozi</p>'
+      + '<h1 id="hm-h1"><span>Drop the keys<em>.</em></span> <span>Take a seat<em>.</em></span></h1>'
+      + '<p class="hm-lede">Whale Wash and WaBarbers share one bay. Book a wash and a cut in one go, or let the valet take the car while you sit back.</p>'
+      + '<div class="hm-ctas">' + cta('wash', 'Book a wash') + cta('kinyozi', 'Book a cut') + (main.length ? '' : '<a class="hm-btn" href="#" data-act="jump" data-v="hm-doors">See services <span aria-hidden="true">→</span></a>') + '</div>'
+      + '<dl class="hm-facts"><div><dt>07–19</dt><dd>Bookings every day</dd></div><div><dt>Valet</dt><dd>Pickup and drop-off</dd></div><div><dt>Live</dt><dd>Track every step</dd></div></dl>'
+    + '</div><a class="hm-cue" href="#" data-act="jump" data-v="hm-doors" aria-label="Scroll to services"><span></span></a></section>'
+    + (tick ? '<div class="hm-tick hm-bleed" aria-hidden="true"><div class="hm-tick-r"><div>' + tick + '</div><div>' + tick + '</div></div></div>' : '')
+    + (main.length ? '<section class="hm-sec" id="hm-doors"><header class="hm-h"><p class="hm-k">01 / The bay</p><h2>Two houses. One stop.</h2><p>A car wash in blue and white, a kinyozi in black and gold. Choose your door, or book both together.</p></header>'
+      + '<div class="pk-main hm-doors">' + main.map(d => big(d).replace('<span class="pk-top">', '<span class="pk-ph" aria-hidden="true"></span><span class="pk-top">')).join('') + '</div></section>' : '')
+    + '<section class="hm-sec hm-how"><header class="hm-h"><p class="hm-k">02 / How it works</p><h2>Booked in a minute.<br>Followed to the finish.</h2></header><ol class="hm-steps">'
+      + steps.map((s, i) => '<li><span class="hm-n">0' + (i + 1) + '</span><h3>' + esc(s[0]) + '</h3><p>' + esc(s[1]) + '</p></li>').join('') + '</ol></section>'
+    + (more.length ? '<section class="hm-sec"><header class="hm-h"><p class="hm-k">03 / Also in the bay</p><h2>More services</h2></header><div class="pk-more">' + more.map(small).join('') + '</div></section>' : '')
+    + (plans.length ? '<section class="hm-sec hm-clubs-s"><header class="hm-h"><p class="hm-k">' + (more.length ? '04' : '03') + ' / Memberships</p><h2>Regulars pay less.</h2><p>Monthly packages for the car and the chair. Pay once a month and save on every visit.</p></header><div class="hm-clubs">' + plans.map(club).join('') + '</div></section>' : '')
+    + '<section class="hm-end hm-bleed"><div class="hm-in"><p class="hm-k">Open for bookings</p><h2>Ready when you are<em>.</em></h2><div class="hm-ctas">' + cta('wash', 'Book a wash') + cta('kinyozi', 'Book a cut')
+      + (bizWa() ? '<a class="hm-btn ghost" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi ' + (S.cat.business || '') + ', ')) + '">WhatsApp us</a>' : '') + '</div></div></section>';
 }
 function viewBook() {
   if (S.token && !S.portal) return '<div class="empty"><h2>This link doesn\'t work any more</h2><p>' + esc(S.loadErr || '') + '</p>' + (bizWa() ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, my booking link isn\'t working.')) + '">Ask us on WhatsApp</a>' : '') + '</div>';
@@ -425,6 +468,7 @@ const H = {
   'sz-add': a => { const l = F().lines[+a.dataset.i]; if (l) { l.sizes.push(['', '']); render(); } },
   'sz-del': a => { const l = F().lines[+a.dataset.i]; if (l) { l.sizes.splice(+a.dataset.k, 1); l.qty = areaOf(l.sizes); render(); } },
   brandgo: a => H.pick(a), // footer brand cards open that department from anywhere on the site
+  jump: a => { const t = document.getElementById(a.dataset.v); if (t) t.scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' }); },
   qty: a => { const l = F().lines[+a.dataset.i]; if (!l) return; l.qty = Math.max(1, Math.min(50, l.qty + (+a.dataset.d))); render(); },
   del: a => { F().lines.splice(+a.dataset.i, 1); render(); },
   flow: a => { F().flows[a.dataset.d] = a.dataset.v; render(); },

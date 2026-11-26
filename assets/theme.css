@@ -1,0 +1,289 @@
+/* PitStop 87 theme · design system "PitStop 87 Web" (WaBarbers + Whale Wash + the house)
+   Load AFTER app.css and public.css on every page:
+     <link rel="stylesheet" href="assets/theme.css">        (index.html)
+     <link rel="stylesheet" href="../assets/theme.css">     (staff/index.html)
+   Brand follows data-brand on <html> or any element, set by setBrand() in core.js:
+     none = PitStop 87 house · "ww" = Whale Wash · "wab" = WaBarbers (always lacquer).
+   Sections 1 tokens · 2 brand voices · 3 foundations · 4 header/footer · 5 buttons · 6 chips
+   7 front door · 8 brand card · 9 steps · 10 service tiles · 11 pay bar · 12 plans/confirmation · 13 motion.
+   Change values in the design system, not here: section 1 is generated from its tokens. */
+/* ---------- 1. tokens (generated from the design system: PitStop 87 Web) ---------- */
+:root{--ww-deep-ocean:#041b34;--ww-whale-blue:#0a6fdb;--ww-aqua:#00b5e2;--ww-sea-foam:#5ed3f2;--ww-sky-mist:#e6f4fb;--ww-sand-white:#fafbff;--wab-lacquer-black:#0b0a08;--wab-champagne-gold:#c9a45c;--wab-cream:#eadfc8;--wab-burgundy:#6e1c26;--wab-antique-gold:#8c6a2f;--wab-smoke:#2a2723;--house-asphalt:#121417;--house-plate:#f7c700;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--radius-xs:4px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--radius-pill:999px;--ww-radius-sm:10px;--ww-radius-md:16px;--ww-radius-lg:22px;--ww-radius-xl:28px;--wab-radius-sharp:0px;--wab-radius-sm:2px;--wab-radius-md:4px;--wab-radius-lg:6px;--tap-min:44px;--tap-main:52px;--header-h:60px;--content-max:720px;--page-max:1120px;--summary-w:340px;--dur-fast:140ms;--dur-base:240ms;--dur-slow:480ms;--dur-lux:640ms;--ease-out:cubic-bezier(0.2, 0.7, 0.2, 1);--ease-water:cubic-bezier(0.45, 0, 0.2, 1);--ease-lux:cubic-bezier(0.25, 0.1, 0.25, 1)}
+/* house: PitStop 87 shell (front page, tracking, customer page, staff app) */
+:root{--bg:#f4f5f6;--surface:#ffffff;--surface-2:#ebedef;--fg:var(--house-asphalt);--muted:#5a626b;--line:#dde1e5;--line-strong:#7d868f;--brand:var(--house-asphalt);--brand-ink:#f4f5f6;--brand-soft:#e6e8eb;--brand-text:var(--house-asphalt);--primary:var(--house-asphalt);--primary-ink:#ffffff;--primary-text:var(--house-asphalt);--accent:#0a6fdb;--accent-ink:#ffffff;--accent-soft:#e3eefc;--accent-text:#0a5bb8;--focus:#0a6fdb;--amber:#e8a600;--amber-ink:#1c1500;--amber-soft:#fff2c2;--amber-text:#7a5600;--ok:#1d7c45;--ok-ink:#ffffff;--ok-soft:#daf0e2;--ok-text:#17663a;--bad:#c2352a;--bad-ink:#ffffff;--bad-soft:#fbe2de;--bad-text:#a12a20;--plate:var(--house-plate);--plate-ink:#111111;--wa:#13803f;--wa-ink:#ffffff;--live:#5be38c;--hd-line:#2a2e33;--overlay:rgba(10, 12, 14, 0.5);--elev-1:0 1px 2px rgba(18, 20, 23, 0.06);--elev-2:0 1px 2px rgba(18, 20, 23, 0.05), 0 12px 28px -14px rgba(18, 20, 23, 0.22);--elev-3:0 2px 6px rgba(18, 20, 23, 0.08), 0 24px 56px -20px rgba(18, 20, 23, 0.38);--elev:var(--elev-2);--shadow:var(--elev-3);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e1012;--surface:#171a1d;--surface-2:#22262a;--fg:#eceef0;--muted:#9aa1a8;--line:#2d3237;--line-strong:#5f676f;--brand:#0b0c0e;--brand-ink:#eceef0;--brand-soft:#22262a;--brand-text:#eceef0;--primary:#eceef0;--primary-ink:var(--house-asphalt);--primary-text:#eceef0;--accent:#4d9bff;--accent-ink:#06121f;--accent-soft:#102741;--accent-text:#8cc0ff;--focus:#8cc0ff;--amber:#f2bc2e;--amber-ink:#1c1500;--amber-soft:#382d0e;--amber-text:#f2cc63;--ok:#36b26a;--ok-ink:#04140b;--ok-soft:#173826;--ok-text:#71d69c;--bad:#e5574b;--bad-ink:#1c0503;--bad-soft:#3d1a17;--bad-text:#f28a80;--plate:#f2c200;--plate-ink:#111111;--wa:#25c463;--wa-ink:#03160a;--live:#5be38c;--hd-line:#2d3237;--overlay:rgba(0, 0, 0, 0.6);--elev-1:0 1px 2px rgba(0, 0, 0, 0.4);--elev-2:0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 32px -14px rgba(0, 0, 0, 0.6);--elev-3:0 2px 8px rgba(0, 0, 0, 0.4), 0 28px 60px -20px rgba(0, 0, 0, 0.7);--elev:var(--elev-2);--shadow:var(--elev-3);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1012;--surface:#171a1d;--surface-2:#22262a;--fg:#eceef0;--muted:#9aa1a8;--line:#2d3237;--line-strong:#5f676f;--brand:#0b0c0e;--brand-ink:#eceef0;--brand-soft:#22262a;--brand-text:#eceef0;--primary:#eceef0;--primary-ink:var(--house-asphalt);--primary-text:#eceef0;--accent:#4d9bff;--accent-ink:#06121f;--accent-soft:#102741;--accent-text:#8cc0ff;--focus:#8cc0ff;--amber:#f2bc2e;--amber-ink:#1c1500;--amber-soft:#382d0e;--amber-text:#f2cc63;--ok:#36b26a;--ok-ink:#04140b;--ok-soft:#173826;--ok-text:#71d69c;--bad:#e5574b;--bad-ink:#1c0503;--bad-soft:#3d1a17;--bad-text:#f28a80;--plate:#f2c200;--plate-ink:#111111;--wa:#25c463;--wa-ink:#03160a;--live:#5be38c;--hd-line:#2d3237;--overlay:rgba(0, 0, 0, 0.6);--elev-1:0 1px 2px rgba(0, 0, 0, 0.4);--elev-2:0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 32px -14px rgba(0, 0, 0, 0.6);--elev-3:0 2px 8px rgba(0, 0, 0, 0.4), 0 28px 60px -20px rgba(0, 0, 0, 0.7);--elev:var(--elev-2);--shadow:var(--elev-3);color-scheme:dark}
+/* Whale Wash: day, follows the phone into night */
+[data-brand="ww"]:not(#_){--bg:#f2f7fb;--surface:#ffffff;--surface-2:var(--ww-sky-mist);--fg:var(--ww-deep-ocean);--muted:#4a5f75;--line:#d3e3ee;--line-strong:#758ca2;--brand:var(--ww-deep-ocean);--brand-ink:var(--ww-sand-white);--brand-soft:#ddeefc;--brand-text:#0a5bb8;--primary:var(--ww-whale-blue);--primary-ink:#ffffff;--primary-text:#0a5bb8;--accent:#0a8fc4;--accent-ink:var(--ww-deep-ocean);--accent-soft:#d3f2fb;--accent-text:#00708c;--focus:var(--ww-whale-blue);--amber:#e8a600;--amber-ink:#1c1500;--amber-soft:#fff2c2;--amber-text:#7a5600;--ok:#1d7c45;--ok-ink:#ffffff;--ok-soft:#daf0e2;--ok-text:#17663a;--bad:#c2352a;--bad-ink:#ffffff;--bad-soft:#fbe2de;--bad-text:#a12a20;--plate:var(--house-plate);--plate-ink:#111111;--wa:#13803f;--wa-ink:#ffffff;--live:#5be38c;--hd-line:var(--ww-deep-ocean);--overlay:rgba(2, 12, 26, 0.5);--elev-1:0 1px 2px rgba(4, 27, 52, 0.06);--elev-2:0 1px 2px rgba(4, 27, 52, 0.05), 0 14px 32px -16px rgba(4, 27, 52, 0.24);--elev-3:0 2px 6px rgba(4, 27, 52, 0.08), 0 28px 60px -22px rgba(4, 27, 52, 0.4);--elev:var(--elev-2);--shadow:var(--elev-3);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"])[data-brand="ww"]:not(#_),:root:not([data-theme="light"]) [data-brand="ww"]:not(#_){--bg:#031326;--surface:#06203d;--surface-2:#0b2c50;--fg:var(--ww-sky-mist);--muted:#8ea9c3;--line:#163a60;--line-strong:#4a729a;--brand:var(--ww-deep-ocean);--brand-ink:var(--ww-sand-white);--brand-soft:#0d3358;--brand-text:#7dc2ff;--primary:#3d9bff;--primary-ink:#021022;--primary-text:#7dc2ff;--accent:#19c6ee;--accent-ink:#021022;--accent-soft:#0a3a50;--accent-text:var(--ww-sea-foam);--focus:var(--ww-sea-foam);--amber:#f2bc2e;--amber-ink:#1c1500;--amber-soft:#382d0e;--amber-text:#f2cc63;--ok:#36b26a;--ok-ink:#04140b;--ok-soft:#173826;--ok-text:#71d69c;--bad:#e5574b;--bad-ink:#1c0503;--bad-soft:#3d1a17;--bad-text:#f28a80;--plate:#f2c200;--plate-ink:#111111;--wa:#25c463;--wa-ink:#03160a;--live:#5be38c;--hd-line:#163a60;--overlay:rgba(0, 0, 0, 0.6);--elev-1:0 1px 2px rgba(0, 0, 0, 0.4);--elev-2:0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 32px -14px rgba(0, 0, 0, 0.6);--elev-3:0 2px 8px rgba(0, 0, 0, 0.4), 0 28px 60px -20px rgba(0, 0, 0, 0.7);--elev:var(--elev-2);--shadow:var(--elev-3);color-scheme:dark}}
+:root[data-theme="dark"][data-brand="ww"]:not(#_),:root[data-theme="dark"] [data-brand="ww"]:not(#_){--bg:#031326;--surface:#06203d;--surface-2:#0b2c50;--fg:var(--ww-sky-mist);--muted:#8ea9c3;--line:#163a60;--line-strong:#4a729a;--brand:var(--ww-deep-ocean);--brand-ink:var(--ww-sand-white);--brand-soft:#0d3358;--brand-text:#7dc2ff;--primary:#3d9bff;--primary-ink:#021022;--primary-text:#7dc2ff;--accent:#19c6ee;--accent-ink:#021022;--accent-soft:#0a3a50;--accent-text:var(--ww-sea-foam);--focus:var(--ww-sea-foam);--amber:#f2bc2e;--amber-ink:#1c1500;--amber-soft:#382d0e;--amber-text:#f2cc63;--ok:#36b26a;--ok-ink:#04140b;--ok-soft:#173826;--ok-text:#71d69c;--bad:#e5574b;--bad-ink:#1c0503;--bad-soft:#3d1a17;--bad-text:#f28a80;--plate:#f2c200;--plate-ink:#111111;--wa:#25c463;--wa-ink:#03160a;--live:#5be38c;--hd-line:#163a60;--overlay:rgba(0, 0, 0, 0.6);--elev-1:0 1px 2px rgba(0, 0, 0, 0.4);--elev-2:0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 32px -14px rgba(0, 0, 0, 0.6);--elev-3:0 2px 8px rgba(0, 0, 0, 0.4), 0 28px 60px -20px rgba(0, 0, 0, 0.7);--elev:var(--elev-2);--shadow:var(--elev-3);color-scheme:dark}
+/* WaBarbers: always lacquer, whatever the phone setting (the colour is the brand) */
+[data-brand="wab"]:not(#_){--bg:var(--wab-lacquer-black);--surface:#15130f;--surface-2:var(--wab-smoke);--fg:var(--wab-cream);--muted:#a99c83;--line:#2e281f;--line-strong:#74644a;--brand:var(--wab-lacquer-black);--brand-ink:var(--wab-cream);--brand-soft:#241e14;--brand-text:var(--wab-champagne-gold);--primary:var(--wab-champagne-gold);--primary-ink:var(--wab-lacquer-black);--primary-text:var(--wab-champagne-gold);--accent:var(--wab-champagne-gold);--accent-ink:var(--wab-lacquer-black);--accent-soft:#2a2318;--accent-text:var(--wab-champagne-gold);--focus:var(--wab-champagne-gold);--amber:var(--wab-cream);--amber-ink:var(--wab-lacquer-black);--amber-soft:#2e2a22;--amber-text:var(--wab-cream);--ok:#3e8e68;--ok-ink:#04120b;--ok-soft:#142a20;--ok-text:#7cc49f;--bad:#cc5d63;--bad-ink:var(--wab-lacquer-black);--bad-soft:#3a1719;--bad-text:#ea8f93;--plate:#f2c200;--plate-ink:#111111;--wa:#25c463;--wa-ink:#03160a;--live:#5be38c;--hd-line:var(--wab-champagne-gold);--overlay:rgba(0, 0, 0, 0.72);--elev-1:none;--elev-2:0 20px 40px -24px rgba(0, 0, 0, 0.9);--elev-3:0 0 0 1px rgba(201, 164, 92, 0.3), 0 30px 70px -24px rgba(0, 0, 0, 0.95);--elev:var(--elev-2);--shadow:var(--elev-3);color-scheme:dark}
+/* ---------- 2. brand voices: type, shape and motion per brand ----------
+   House (no data-brand): Montserrat, pit-board numerals, medium radii.
+   Whale Wash (data-brand="ww"): Quicksand everywhere, round shapes, pill buttons.
+   WaBarbers (data-brand="wab"): Cormorant Garamond headings and prices, Montserrat text and spaced capitals, square shapes. */
+:root{
+  --f-house:'Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-ww:'Quicksand','Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-serif:'Cormorant Garamond',Garamond,Georgia,'Times New Roman',serif;
+  --f-board:'Barlow Condensed','Arial Narrow','Roboto Condensed',system-ui,sans-serif;
+  --f-ui:var(--f-house); --f-head:var(--f-house); --f-num:var(--f-board); --f-label:var(--f-board); --f-btn:var(--f-house);
+  --head-adj:none; --w-head:700; --w-btn:700; --tt-btn:none; --ls-btn:0em; --fs-btn:15px;
+  --r-xs:var(--radius-xs); --r-sm:var(--radius-sm); --r-md:var(--radius-md); --r-lg:var(--radius-lg); --r-xl:var(--radius-xl);
+  --r-btn:var(--radius-md); --r-chip:var(--radius-pill);
+  --ease:var(--ease-out); --lift:-2px;
+}
+[data-brand="ww"]:not(#_),.pk.ww,.bcard.ww{
+  --f-ui:var(--f-ww); --f-head:var(--f-ww); --f-num:var(--f-ww); --f-label:var(--f-ww); --f-btn:var(--f-ww);
+  --head-adj:none; --w-head:700; --w-btn:700; --tt-btn:none; --ls-btn:0em; --fs-btn:16px;
+  --r-xs:6px; --r-sm:var(--ww-radius-sm); --r-md:var(--ww-radius-md); --r-lg:var(--ww-radius-lg); --r-xl:var(--ww-radius-xl);
+  --r-btn:var(--radius-pill); --r-chip:var(--radius-pill);
+  --ease:var(--ease-water); --lift:-2px;
+}
+[data-brand="wab"]:not(#_),.pk.wab,.bcard.wab{
+  --f-ui:var(--f-house); --f-head:var(--f-serif); --f-num:var(--f-serif); --f-label:var(--f-house); --f-btn:var(--f-house);
+  --head-adj:.5; --w-head:700; --w-btn:600; --tt-btn:uppercase; --ls-btn:.18em; --fs-btn:12.5px;
+  --r-xs:var(--wab-radius-sm); --r-sm:var(--wab-radius-sm); --r-md:var(--wab-radius-sm); --r-lg:var(--wab-radius-md); --r-xl:var(--wab-radius-lg);
+  --r-btn:var(--wab-radius-sm); --r-chip:var(--wab-radius-sm);
+  --ease:var(--ease-lux); --lift:0px;
+}
+/* the gold coachline: hairline, burgundy band, hairline (WaBarbers' one stripe per screen) */
+:root{--coachline:linear-gradient(var(--wab-champagne-gold) 0 1px,transparent 1px 2.5px,var(--wab-burgundy) 2.5px 5.5px,transparent 5.5px 7px,var(--wab-champagne-gold) 7px 8px)}
+/* the chevron pattern from the WaBarbers mark, gold on lacquer */
+:root{--chevrons:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='48' viewBox='0 0 64 48'%3E%3Cg fill='none' stroke='%23C9A45C' stroke-width='1.5'%3E%3Cpath d='M0 4 32 42 64 4'/%3E%3Cpath d='M12 4 32 28 52 4' opacity='.6'/%3E%3C/g%3E%3C/svg%3E")}
+
+/* ---------- 3. foundations ---------- */
+body{font-family:var(--f-ui)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+header.top :focus-visible,.pk:focus-visible{outline-color:var(--brand-ink)}
+a{color:var(--primary-text);text-underline-offset:3px}
+.muted{color:var(--muted)}
+::placeholder{color:var(--muted);opacity:.8}
+input,select,textarea{min-height:var(--tap-min);border-color:var(--line-strong);border-radius:var(--r-sm);font-family:var(--f-ui)}
+input[type="checkbox"]{min-height:0;border-radius:var(--r-xs)}
+textarea{min-height:92px;line-height:1.45}
+[data-brand="wab"]:not(#_) input,[data-brand="wab"]:not(#_) select,[data-brand="wab"]:not(#_) textarea{background:var(--bg)}
+.field{gap:6px}
+.field label,.lbl{font:600 12.5px/1.25 var(--f-ui);color:var(--muted)}
+[data-brand="wab"]:not(#_) .field label,[data-brand="wab"]:not(#_) .lbl{font:500 10.5px/1.3 var(--f-label);letter-spacing:.2em;text-transform:uppercase}
+.sec-h,legend,.card h3,.kind{font-family:var(--f-label)}
+[data-brand="wab"]:not(#_) .sec-h,[data-brand="wab"]:not(#_) legend,[data-brand="wab"]:not(#_) .card h3{font-weight:500;font-size:11px;letter-spacing:.24em;color:var(--primary-text)}
+
+/* ---------- 4. header and footer ---------- */
+header.top .wrap{min-height:var(--header-h)}
+header.top{box-shadow:inset 0 -1px 0 var(--hd-line)}
+.brand b{font-size:17px}
+/* the house has no mark of its own yet: set PITSTOP 87 as pit-board type, never borrow the whale */
+:root:not([data-brand]) header.top .mark{display:none}
+:root:not([data-brand]) header.top .brand b{font:700 22px/1 var(--f-board);letter-spacing:.06em;text-transform:uppercase}
+.brand small{font-family:var(--f-board)}
+.hd-btn{min-height:36px;padding:8px 13px;border-radius:var(--r-btn);font:600 13px/1 var(--f-ui);border-color:color-mix(in srgb,var(--brand-ink) 40%,transparent)}
+[data-brand="wab"]:not(#_) .hd-btn{font:600 10.5px/1 var(--f-label);letter-spacing:.18em;text-transform:uppercase;border-color:color-mix(in srgb,var(--wab-champagne-gold) 55%,transparent);color:var(--wab-champagne-gold)}
+[data-brand="wab"]:not(#_) header.top{box-shadow:none}
+[data-brand="wab"]:not(#_) header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;background:var(--coachline);pointer-events:none}
+[data-brand="wab"]:not(#_) header.top .wrap{padding-bottom:8px}
+[data-brand="wab"]:not(#_) .brand b{font-size:21px;font-weight:700;letter-spacing:.01em}
+footer.foot{background:linear-gradient(var(--surface-2),transparent 75%)}
+.fb{border-radius:var(--r-md);padding:12px;min-height:64px}
+.fb img{border-radius:var(--r-sm)}
+.fb b{font-family:var(--f-ui);font-weight:700}
+[data-brand="wab"]:not(#_) footer.foot{background:none;border-top-color:var(--line)}
+
+/* ---------- 5. buttons ---------- */
+.btn{min-height:var(--tap-min);padding:11px 18px;border-radius:var(--r-btn);font:var(--w-btn) var(--fs-btn)/1.1 var(--f-btn);letter-spacing:var(--ls-btn);text-transform:var(--tt-btn)}
+.btn.sm{min-height:38px;padding:9px 14px;font-size:calc(var(--fs-btn) - 1.5px);border-radius:var(--r-btn)}
+.btn.lg{min-height:var(--tap-main);padding:15px 24px;font-size:calc(var(--fs-btn) + 1px);border-radius:var(--r-btn)}
+.btn.lg::after{display:none}
+.btn:not(:disabled):hover{transform:translateY(calc(var(--lift) / 2));box-shadow:var(--elev-1);filter:brightness(1.06)}
+.btn:not(:disabled):active{transform:scale(.98);filter:brightness(.96)}
+.btn:disabled{opacity:1;background:var(--surface-2);color:var(--muted);border-color:transparent;box-shadow:none}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line-strong)}
+.btn.ghost:not(:disabled):hover{background:var(--surface-2);box-shadow:none}
+[data-brand="wab"]:not(#_) .btn.ghost{color:var(--primary-text);border-color:color-mix(in srgb,var(--primary) 60%,transparent)}
+[data-brand="wab"]:not(#_) .btn.ghost:not(:disabled):hover{background:color-mix(in srgb,var(--primary) 10%,transparent)}
+/* the main action wears primary in every brand (Book now was accent aqua in Whale Wash) */
+.btn.accent.lg,.paybar [data-act="submit"]{background:var(--primary);color:var(--primary-ink)}
+.btn.wa{background:var(--wa);color:var(--wa-ink)}
+.icon-btn{width:40px;height:40px;border-radius:var(--r-sm);border-color:var(--line-strong)}
+.line{grid-template-columns:minmax(0,1fr) auto 92px 40px;border-radius:var(--r-md);padding:8px 8px 8px 12px}
+@media (max-width:440px){.line{grid-template-columns:auto minmax(0,1fr) 40px}}
+.link{color:var(--primary-text)}
+
+/* ---------- 6. chips and the segmented control ----------
+   Sizes grow only on the booking pages (.pub); the staff app keeps its dense chips. */
+.chip{border-radius:var(--r-chip)}
+.chip[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.pub .chip{min-height:40px;padding:8px 15px;font:600 13.5px/1.2 var(--f-ui);border-color:var(--line)}
+.pub .chip[aria-pressed="true"]{box-shadow:var(--elev-1)}
+.pub .days .chip{border-radius:var(--r-md);min-height:52px;padding:8px 14px}
+.days .chip small{font-weight:500;opacity:.8}
+.slots .chip{font-family:var(--f-ui);font-variant-numeric:tabular-nums}
+[data-brand="wab"]:not(#_) .chip{font-weight:500;border-color:var(--line)}
+[data-brand="wab"]:not(#_) .chip:hover{border-color:color-mix(in srgb,var(--primary) 55%,var(--line))}
+.seg{border-radius:var(--r-sm)}
+.seg button{border-radius:max(0px,calc(var(--r-sm) - 3px))}
+.pub .seg{padding:4px;gap:4px}
+.pub .seg button{min-height:40px;padding:9px 14px;font:600 13.5px/1.2 var(--f-ui)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--elev-1),0 0 0 1px var(--line)}
+[data-brand="wab"]:not(#_) .seg button[aria-pressed="true"]{background:var(--bg);color:var(--primary-text);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--primary) 60%,transparent)}
+.dc{border-radius:var(--r-xs);font-family:var(--f-board)}
+
+/* ---------- 7. the front door (house) and its two brand panels ---------- */
+.pick{gap:18px}
+.pk-head h1{font:700 clamp(26px,6.6vw,34px)/1.1 var(--f-house);letter-spacing:-.025em}
+.pk-sub{font:700 20px/1.2 var(--f-house);letter-spacing:-.01em;margin-top:12px}
+.pk-main{gap:14px}
+.pk{border-radius:var(--r-xl);padding:20px;gap:16px}
+.pk-t b{font:var(--w-head) 27px/1.05 var(--f-head);font-size-adjust:var(--head-adj);letter-spacing:-.01em}
+.pk-t small{font:700 11.5px/1.2 var(--f-label);letter-spacing:.18em}
+.pk-list{border-radius:var(--r-md)}
+.pk-list>span{min-height:44px;padding:11px 0;font:600 15.5px/1.25 var(--f-ui)}
+.pk-list b{font:700 19px/1 var(--f-num);font-size-adjust:var(--head-adj);font-variant-numeric:lining-nums tabular-nums}
+.pk-list b small{font:500 12px/1 var(--f-ui);font-size-adjust:none;opacity:.75}
+.pk-cta{min-height:var(--tap-main);border-radius:var(--r-btn);font:var(--w-btn) var(--fs-btn)/1 var(--f-btn);letter-spacing:var(--ls-btn);text-transform:var(--tt-btn)}
+/* Whale Wash panel: deep ocean, round, Whale Blue pill */
+.pk.ww{background:radial-gradient(130% 90% at 100% 0%,#0B4A8C 0%,transparent 55%),linear-gradient(170deg,#08305E 0%,var(--ww-deep-ocean) 70%);border-color:#0E4C8F;color:var(--ww-sand-white)}
+.pk.ww .pk-t small{color:var(--ww-sea-foam)}
+.pk.ww .pk-list{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(94,211,242,.12)}
+.pk.ww .pk-cta{background:var(--ww-whale-blue);color:#FFFFFF;box-shadow:0 10px 24px -12px rgba(10,111,219,.9)}
+/* WaBarbers panel: lacquer, square, double gold frame, menu rules, champagne button */
+.pk.wab{background:var(--wab-lacquer-black);color:var(--wab-cream);border:1px solid rgba(201,164,92,.6);
+  box-shadow:inset 0 0 0 6px var(--wab-lacquer-black),inset 0 0 0 7px rgba(201,164,92,.28),0 18px 36px -22px rgba(0,0,0,.6)}
+.pk.wab .pk-t{gap:7px}
+.pk.wab .pk-t small{color:var(--wab-champagne-gold);font:500 10.5px/1.2 var(--f-house);letter-spacing:.3em}
+.pk.wab .pk-t b{color:var(--wab-cream)}
+.pk.wab .pk-mk{border-radius:2px;background:transparent}
+.pk.wab .pk-list{background:none;border-radius:0;padding:0 2px;border-top:1px solid rgba(201,164,92,.3);border-bottom:1px solid rgba(201,164,92,.3)}
+.pk.wab .pk-list>span{font:500 15px/1.25 var(--f-house)}
+.pk.wab .pk-list>span+span{border-top-color:rgba(201,164,92,.16)}
+.pk.wab .pk-list b{color:var(--wab-champagne-gold);font-size:21px}
+.pk.wab .pk-cta{background:var(--wab-champagne-gold);color:var(--wab-lacquer-black)}
+.pk.wab .pk-cta span{font-family:var(--f-house)}
+/* more services: quiet house rows */
+.pk-row{border-radius:var(--r-lg);padding:14px 16px;gap:14px;min-height:76px}
+.pk-row .pk-t b{font:700 17px/1.2 var(--f-house)}
+.pk-row .pk-t small{font:500 13.5px/1.35 var(--f-house)}
+.pk-ic{width:48px;height:48px;border-radius:var(--r-md)}
+.pk-from{font:700 18px/1 var(--f-board)}
+.pk-from small{font:700 10.5px/1 var(--f-board);letter-spacing:.14em}
+.pk-cont{border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--elev-1)}
+
+/* ---------- 8. brand card at the top of a department ---------- */
+.bcard{border-radius:var(--r-lg);min-height:88px}
+.bcard.ww{background:radial-gradient(120% 140% at 0% 0%,#0A3A70 0%,var(--ww-deep-ocean) 62%)}
+.bcard.ww b{font:700 24px/1 var(--f-ww)}
+.bcard.ww b span{color:#3D9BFF}
+.bcard.ww small{font:700 11px/1.2 var(--f-ww);letter-spacing:.18em;color:var(--ww-sea-foam)}
+.bcard.ww img{border-radius:14px}
+.bcard.wab{background:var(--wab-lacquer-black);color:var(--wab-cream);padding:14px 20px 14px 14px;
+  box-shadow:inset 0 0 0 1px rgba(201,164,92,.6),inset 0 0 0 6px var(--wab-lacquer-black),inset 0 0 0 7px rgba(201,164,92,.28)}
+/* chevrons on the right only, fading in; the name sits on clean lacquer */
+.bcard.wab::after{display:none;inset:8px 8px 8px auto;width:min(42%,190px);z-index:0;background:var(--chevrons) right -4px top -2px/56px 42px;opacity:.6;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 75%);mask-image:linear-gradient(90deg,transparent,#000 75%)}
+.bcard.wab::before{display:none}
+@media (min-width:560px){.bcard.wab::after{display:block}}
+.bcard.wab .bt::after{display:none;animation:none}
+.bcard.wab small{font:italic 500 18px/1.2 var(--f-serif);color:var(--wab-champagne-gold)}
+.bcard.wab img.mk{position:relative;z-index:1}
+
+/* ---------- 9. steps ---------- */
+.step{border-radius:var(--r-lg);padding:clamp(18px,4.6vw,26px);gap:16px;box-shadow:var(--elev-1)}
+.step>h2{font:var(--w-head) 20px/1.25 var(--f-head);font-size-adjust:var(--head-adj);gap:12px;letter-spacing:-.005em}
+.step>h2 i{width:30px;height:30px;font:700 14px/30px var(--f-ui);font-size-adjust:none;box-shadow:none}
+.step>p.muted{font-size:14px}
+[data-brand="ww"]:not(#_) .step{box-shadow:var(--elev-2);border-color:transparent}
+[data-brand="wab"]:not(#_) .step{--ring:inset 0 1px 0 color-mix(in srgb,var(--primary) 55%,transparent);box-shadow:var(--ring);border-color:var(--line)}
+[data-brand="wab"]:not(#_) .step>h2{text-transform:capitalize;font-size:21px}
+[data-brand="wab"]:not(#_) .step>h2 i{border-radius:0;background:transparent;color:var(--primary-text);box-shadow:inset 0 0 0 1px var(--primary);font:700 18px/30px var(--f-serif);font-variant-numeric:lining-nums}
+.step.dim{opacity:.6}
+
+/* group labels: small capitals; WaBarbers adds the menu rule */
+.sgroup>h3{font:700 12px/1.2 var(--f-label);letter-spacing:.16em;color:var(--fg);align-items:center}
+.sgroup>h3 small{font:500 13px/1.2 var(--f-ui);letter-spacing:0;text-transform:none}
+[data-brand="wab"]:not(#_) .sgroup>h3{font:500 11px/1.2 var(--f-label);letter-spacing:.26em;color:var(--primary-text);flex-wrap:nowrap}
+[data-brand="wab"]:not(#_) .sgroup>h3::after{content:"";flex:1 1 auto;height:1px;background:color-mix(in srgb,var(--primary) 30%,transparent)}
+
+/* ---------- 10. service tiles ---------- */
+.svc-grid.big{grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:10px}
+.svc{border-radius:var(--r-md);background:var(--surface);border-color:var(--line);font-family:var(--f-ui)}
+.svc-grid.big .svc{min-height:96px;padding:14px 14px 13px;gap:4px}
+.svc-grid.big .svc .sn{font:700 15px/1.25 var(--f-ui)}
+.svc .sh{font:500 12.5px/1.35 var(--f-ui)}
+.svc-grid.big .svc b{font:700 19px/1 var(--f-num);font-size-adjust:var(--head-adj);font-variant-numeric:lining-nums tabular-nums;color:var(--fg);padding-top:8px}
+.svc:hover{border-color:color-mix(in srgb,var(--primary) 50%,var(--line))}
+@media (hover:hover){.svc:hover{transform:translateY(var(--lift));box-shadow:var(--elev-2)}}
+.svc[aria-pressed="true"]{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:var(--brand-soft)}
+.svc[aria-pressed="true"] b{color:var(--brand-text)}
+.svc .q{top:9px;right:9px;min-width:24px;height:24px;border-radius:var(--r-chip);font:700 12.5px/24px var(--f-ui);background:var(--primary);color:var(--primary-ink)}
+.svc .q.pop{animation:dsPop .32s var(--ease-out)}
+@keyframes dsPop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+/* WaBarbers tiles: names as on the printed menu, prices in champagne Cormorant, a double gold frame when chosen */
+[data-brand="wab"]:not(#_) .svc{background:var(--bg)}
+[data-brand="wab"]:not(#_) .svc-grid.big .svc .sn{font:500 14.5px/1.3 var(--f-house)}
+[data-brand="wab"]:not(#_) .svc-grid.big .svc b{color:var(--primary-text);font-size:20px}
+@media (hover:hover){[data-brand="wab"]:not(#_) .svc:hover{transform:none;box-shadow:none}}
+[data-brand="wab"]:not(#_) .svc[aria-pressed="true"]{background:var(--brand-soft);border-color:var(--primary);box-shadow:inset 0 0 0 4px var(--brand-soft),inset 0 0 0 5px color-mix(in srgb,var(--primary) 55%,transparent)}
+[data-brand="wab"]:not(#_) .svc[aria-pressed="true"] b{color:var(--primary-text)}
+[data-brand="wab"]:not(#_) .svc .q{border-radius:var(--r-xs);top:10px;right:10px;font-family:var(--f-house)}
+[data-brand="wab"]:not(#_) .svc-grid.swap .svc{animation-duration:.6s;animation-timing-function:var(--ease-lux)}
+.add-more{border-radius:var(--r-md);min-height:var(--tap-min);display:grid;place-items:center;border-color:var(--line-strong);font-family:var(--f-ui)}
+[data-brand="wab"]:not(#_) .add-more{border-color:color-mix(in srgb,var(--primary) 40%,transparent);color:var(--primary-text);font:500 11px/1.2 var(--f-label);letter-spacing:.2em;text-transform:uppercase}
+
+/* ---------- 11. pay bar (phones) and summary card (desktop) ---------- */
+.paybar .sum b{font:700 26px/1 var(--f-num);font-size-adjust:var(--head-adj);font-variant-numeric:lining-nums tabular-nums}
+.paybar .sum span{font-family:var(--f-ui)}
+[data-brand="wab"]:not(#_) .paybar{border-top-color:color-mix(in srgb,var(--primary) 45%,transparent);background:color-mix(in srgb,var(--bg) 90%,transparent)}
+[data-brand="wab"]:not(#_) .paybar .sum b{color:var(--primary-text);font-size:28px}
+.pb-head,.pb-trust{font-family:var(--f-label)}
+@media (min-width:1000px){
+  .paybar{border-radius:var(--r-lg);box-shadow:var(--elev-2)}
+  .paybar .sum b{font-size:36px}
+  [data-brand="wab"]:not(#_) .paybar{background:var(--surface);border:1px solid color-mix(in srgb,var(--primary) 40%,transparent);box-shadow:inset 0 0 0 5px var(--surface),inset 0 0 0 6px color-mix(in srgb,var(--primary) 18%,transparent)}
+  [data-brand="wab"]:not(#_) .paybar .sum b{font-size:40px}
+  [data-brand="wab"]:not(#_) .pb-head,[data-brand="wab"]:not(#_) .pb-trust{font-weight:500;font-size:10.5px;letter-spacing:.24em}
+  .pb-lines li b{font-family:var(--f-num);font-size-adjust:var(--head-adj)}
+  [data-brand="wab"]:not(#_) .pb-lines li b{color:var(--primary-text);font-size:17px}
+}
+
+/* every figure in a brand screen uses the brand's numerals, lining */
+.pb-lines li b,.line .pfix,.trow.big,.sheet-foot .grand,.pk-from{font-variant-numeric:lining-nums tabular-nums}
+.line .pfix,.trow.big{font-family:var(--f-num);font-size-adjust:var(--head-adj)}
+[data-brand="wab"]:not(#_) .line .pfix{color:var(--primary-text);font-size:17px}
+
+/* ---------- 12. plans, confirmation, tracking, members card ---------- */
+.plans{gap:12px}
+.plan{border-radius:var(--r-md);padding:18px;gap:10px;box-shadow:none}
+.plan h3{font:var(--w-head) 17px/1.25 var(--f-head);font-size-adjust:var(--head-adj)}
+.plan b.pr{font:700 26px/1 var(--f-num);font-size-adjust:var(--head-adj);font-variant-numeric:lining-nums tabular-nums}
+.plan b.pr small{font:500 13px/1 var(--f-ui);font-size-adjust:none}
+.plan p{font-size:13.5px;line-height:1.45}
+.plan .btn{width:100%;margin-top:auto}
+.plan:hover{transform:none;box-shadow:var(--elev-1)}
+[data-brand="wab"]:not(#_) .plan{background:var(--bg);border-color:var(--line);box-shadow:inset 0 1px 0 color-mix(in srgb,var(--primary) 50%,transparent)}
+[data-brand="wab"]:not(#_) .plan h3{font-size:19px;text-transform:capitalize}
+[data-brand="wab"]:not(#_) .plan b.pr{color:var(--primary-text)}
+.done-card{border-radius:var(--r-lg)}
+.done-card h1{font:var(--w-head) 26px/1.2 var(--f-head);font-size-adjust:var(--head-adj)}
+.bigcode{border-radius:var(--r-xs);font-family:var(--f-board)}
+.plate{font-family:var(--f-board)}
+.status-big{font-family:var(--f-head)}
+.jcard{border-radius:var(--r-lg)}
+.card,.list,.totals{border-radius:var(--r-md)}
+.mcard{border-radius:var(--r-lg)}
+[data-brand="wab"]:not(#_) .mcard{background:var(--wab-lacquer-black);color:var(--wab-cream);box-shadow:inset 0 0 0 1px rgba(201,164,92,.6),inset 0 0 0 6px var(--wab-lacquer-black),inset 0 0 0 7px rgba(201,164,92,.28)}
+[data-brand="wab"]:not(#_) .mcard::after{background:var(--chevrons) 0 0/32px 24px;opacity:.35;transform:none}
+[data-brand="wab"]:not(#_) .mcard .left{font-family:var(--f-serif);color:var(--wab-champagne-gold)}
+[data-brand="wab"]:not(#_) .mcard .pips i{border-radius:0;border-color:var(--wab-champagne-gold)}
+[data-brand="wab"]:not(#_) .mcard .pips i.on{background:var(--wab-champagne-gold)}
+:root[data-brand="wab"]:not(#_) .hero{background-color:var(--wab-lacquer-black);box-shadow:inset 0 0 0 1px rgba(201,164,92,.45),var(--elev)}
+.empty,.note,.err{border-radius:var(--r-md)}
+.toast{border-radius:var(--r-md);font-family:var(--f-ui)}
+.sheet-panel{border-radius:var(--r-xl) var(--r-xl) 0 0}
+@media (min-width:720px){.sheet-panel{border-radius:var(--r-xl)}}
+.skeleton,.sk{border-radius:var(--r-lg)}
+
+/* ---------- 13. motion: calm and quick; nothing bounces; WaBarbers moves slower ---------- */
+.svc,.chip,.btn,.pk,.pk-row,.fb{transition-timing-function:var(--ease)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
