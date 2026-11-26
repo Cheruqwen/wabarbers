@@ -1,6 +1,6 @@
-﻿// =====================================================================
-//  PitStop 87 Â· settings for your website
-//  Fill these in from Supabase â†’ Project Settings â†’ API (see README).
+// =====================================================================
+//  PitStop 87 · settings for your website
+//  Fill these in from Supabase → Project Settings → API (see README).
 //  Leave supabaseUrl empty to run in DEMO MODE (data stays on each device).
 // =====================================================================
 window.PITSTOP_CONFIG = {
