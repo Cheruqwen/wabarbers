@@ -1,0 +1,17 @@
+{
+  "name": "pitia-pitstop",
+  "private": true,
+  "type": "module",
+  "description": "Booking and records for the car wash, carpets, car service, kinyozi and nails.",
+  "scripts": {
+    "demo": "node server/local.mjs --demo",
+    "start": "node server/local.mjs",
+    "reset": "node server/local.mjs --reset",
+    "test": "node dev/roles.test.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@supabase/supabase-js": "2.112.4"
+  },
+  "engines": { "node": ">=18" }
+}
