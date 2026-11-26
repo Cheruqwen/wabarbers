@@ -13,11 +13,11 @@ const ph = (desc, cls, src) => src
   ? '<figure class="shot has ' + (cls || '') + '"><img src="' + img(src) + '" alt="' + esc(desc) + '" loading="lazy"></figure>'
   : '<figure class="shot ' + (cls || '') + '"><span class="shot-tag">' + ic('camera') + 'Photo to come</span><figcaption>' + esc(desc) + '</figcaption></figure>';
 const PHOTOS = {
-  wash: ['Foam cannon covering a white saloon in the bay at dusk, blue lights on the wet floor, washer in a Whale Wash tee.', 'Close-up: a microfibre towel drying a shiny bonnet, water beading.', 'A clean boda boda parked beside a muddy one.'],
-  carpet: ['A large carpet hanging in the sun after washing, colours bright and fresh.', 'Close-up: a brush working foam into a carpet.', 'Rolled carpets with numbered tags, ready to go home.'],
-  kinyozi: ['A barber shaping a fade, side profile, warm gold light, mirrors behind.', 'Hot towel shave, client relaxed in the leather chair.', 'Clippers, comb and razor laid out on the black counter.'],
-  garage: ['Mechanic under an open bonnet, work light on, tools laid out.', 'A diagnostic reader plugged in, screen clearly visible.', 'A car up on the ramp in a clean workshop.'],
-  nails: ['Close-up of a fresh gel manicure in soft pink, hands resting on a white towel.', 'Nail tech at work with polish colours lined up.', 'The pedicure chair, calm and bright.'],
+  wash: ['Foam on a white car in the bay, blue lights.', 'Towel drying a shiny bonnet.', 'A clean boda boda.'],
+  carpet: ['A clean carpet drying in the sun.', 'Brush and foam on a carpet.', 'Rolled carpets with tags.'],
+  kinyozi: ['A barber shaping a fade, gold light.', 'Hot towel shave in the leather chair.', 'Clippers and comb on the counter.'],
+  garage: ['Mechanic under an open bonnet.', 'Diagnostic reader plugged in.', 'A car on the ramp.'],
+  nails: ['A fresh pink gel manicure.', 'Nail colours lined up.', 'The pedicure chair.'],
 };
 // a field label with its picture
 const lb = (forId, icon, text) => '<label for="' + forId + '">' + ic(icon, 'lb-ic') + esc(text) + '</label>';
@@ -204,8 +204,8 @@ function svcGroups(dept) {
 const MAIN_DEPTS = ['wash', 'kinyozi']; // the two big doors on the first screen
 const PICK_HEAD = { wash: 'What needs washing?', kinyozi: 'What would you like?', carpet: 'What needs cleaning?', garage: 'What does the car need?', nails: 'What would you like?' };
 const pickHref = k => S.token ? '#' : '#s/' + k;
-const DEPT_BLURB = { wash: 'Cars and boda bodas. Come in, or we pick up and drop off.', kinyozi: 'Cuts, shaves and dye. In the chair or at home.',
-  carpet: 'KSh 15 per sq ft, final price after measuring. Sofas and mattresses coming soon.', garage: 'Service, repairs and diagnostics', nails: 'Manicure, pedicure and gel' };
+const DEPT_BLURB = { wash: 'Cars and boda bodas', kinyozi: 'Cuts, shaves and dye',
+  carpet: 'Washed and dried, priced by size', garage: 'Service and repairs', nails: 'Manicure and pedicure' };
 const PICK_CTA = { wash: 'Book a wash', kinyozi: 'Book a cut' };
 // the first screen's tile: a few rows of prices (one per group, or the first services when there are no groups)
 function deptSummary(k) {
@@ -253,42 +253,23 @@ function viewPick() {
    Everything on it comes from the catalogue, so prices, plans and pickup areas stay true. */
 const isHome = () => S.view === 'book' && !S.done && !S.token && !!S.form && !S.form.tab && !S.form.lines.length;
 function viewHome(main, more, big, small) {
-  const has = k => main.some(d => d.key === k);
-  const cta = (k, label) => has(k) ? '<a class="hm-btn ' + BRAND[k] + '" href="#s/' + k + '" data-act="pick" data-v="' + k + '">' + label + ' <span aria-hidden="true">→</span></a>' : '';
-  // the ticker: every group and single service on the menu, once each
-  const names = []; depts().forEach(d => svcGroups(d.key).forEach(g => { if (g.name === 'Add-on') return; (g.name ? [g.name] : g.items.map(x => x.item)).forEach(n => { if (!names.includes(n)) names.push(n); }); }));
-  const tick = names.map(n => '<span>' + esc(n) + '</span>').join('');
-  const zones = (S.cat.zones || []).map(z => z.name).filter(Boolean);
-  const where = zones.length ? 'our valet collects from ' + (zones.length > 3 ? zones.slice(0, 3).join(', ') + ' and nearby' : zones.length > 1 ? zones.slice(0, -1).join(', ') + ' and ' + zones[zones.length - 1] : zones[0]) : 'our valet collects it and brings it back clean';
+  // simple on purpose: the two shops first, everything else below, few words
   const plans = (S.cat.plans || []).filter(p => depts().some(d => d.key === p.dept));
   const club = p => { const b = BRAND[p.dept] || '';
-    return '<article class="hm-club"' + (b === 'ww' || b === 'wab' ? ' data-brand="' + b + '"' : '') + '><span class="hm-club-k">' + esc(b ? BRANDS[b].name : deptName(p.dept)) + '</span><h3>' + esc(p.name) + '</h3>'
+    return '<article class="hm-club"' + (b === 'ww' || b === 'wab' ? ' data-brand="' + b + '"' : '') + '><span class="hm-club-k">' + ic(DEPT_IC[p.dept] || 'crown') + esc(b ? BRANDS[b].name : deptName(p.dept)) + '</span><h3>' + esc(p.name) + '</h3>'
       + '<p class="hm-club-p"><b>' + num(p.price) + '</b><small>KES / ' + (p.days === 30 ? 'month' : p.days + ' days') + '</small></p><p class="hm-club-d">' + esc(p.perks || (p.allowance + ' visits')) + '</p>'
-      + (bizWa() ? '<a class="hm-club-a" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Ask to join <span aria-hidden="true">→</span></a>' : '') + '</article>'; };
-  const steps = [
-    ['calendar', 'Pick a service and a time', 'See the price first. Choose a time from 07:00 to 19:00, any day.'],
-    ['truck', 'Come in, or we come to you', 'Drive into the bay, or ' + where + '.'],
-    ['phone', 'Follow it live, then pay', 'Get a booking code and a live link. Pay by M-Pesa, cash or card when it is done.'],
-  ];
-  const gallery = ['The whole team in branded tees, standing in front of both shopfronts at dusk, smiling.', 'A freshly washed car rolling out of the bay, water still dripping, low angle.',
-    'The WaBarbers chair from the side: black leather, gold light, mirror glow.', 'A valet handing car keys back to a customer at their gate.'];
-  return '<section class="hm-hero hm-bleed" aria-labelledby="hm-h1"><div class="hm-photo" aria-hidden="true"></div><div class="hm-in hm-hero-in">'
-      + '<p class="hm-eye"><i></i>' + esc(S.cat.business || 'PitStop 87') + ' · Car wash · Kinyozi</p>'
-      + '<h1 id="hm-h1"><span>Drop the keys<em>.</em></span> <span>Take a seat<em>.</em></span></h1>'
-      + '<p class="hm-lede">Whale Wash and WaBarbers share one bay. Book a wash and a cut in one go, or let the valet take the car while you sit back.</p>'
-      + '<div class="hm-ctas">' + cta('wash', 'Book a wash') + cta('kinyozi', 'Book a cut') + (main.length ? '' : '<a class="hm-btn" href="#" data-act="jump" data-v="hm-doors">See services <span aria-hidden="true">→</span></a>') + '</div>'
-      + '<dl class="hm-facts"><div>' + ic('clock') + '<dt>07–19</dt><dd>Every day</dd></div><div>' + ic('truck') + '<dt>Valet</dt><dd>Pickup and drop-off</dd></div><div>' + ic('live') + '<dt>Live</dt><dd>Track every step</dd></div></dl>'
-    + '</div><a class="hm-cue" href="#" data-act="jump" data-v="hm-doors" aria-label="Scroll to services"><span></span></a></section>'
-    + (tick ? '<div class="hm-tick hm-bleed" aria-hidden="true"><div class="hm-tick-r"><div>' + tick + '</div><div>' + tick + '</div></div></div>' : '')
-    + (main.length ? '<section class="hm-sec" id="hm-doors"><header class="hm-h"><p class="hm-k">' + ic('shop') + ' The bay</p><h2>Two houses. One stop.</h2><p>A car wash in blue and white, a kinyozi in black and gold. Choose your door, or book both together.</p></header>'
-      + '<div class="pk-main hm-doors">' + main.map(d => big(d).replace('<span class="pk-top">', '<span class="pk-ph" aria-hidden="true"></span><span class="pk-top">')).join('') + '</div></section>' : '')
-    + '<section class="hm-sec hm-how"><header class="hm-h"><p class="hm-k">' + ic('key') + ' How it works</p><h2>Booked in a minute.<br>Followed to the finish.</h2></header><ol class="hm-steps">'
-      + steps.map((s, i) => '<li><span class="hm-si">' + ic(s[0]) + '</span><span class="hm-n">0' + (i + 1) + '</span><h3>' + esc(s[1]) + '</h3><p>' + esc(s[2]) + '</p>' + (i < 2 ? '<span class="hm-next" aria-hidden="true">' + ic('arrow') + '</span>' : '') + '</li>').join('') + '</ol></section>'
+      + (bizWa() ? '<a class="hm-club-a" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Join <span aria-hidden="true">→</span></a>' : '') + '</article>'; };
+  const gallery = ['The team in branded tees in front of both shops at dusk.', 'A clean car rolling out of the bay, water dripping.',
+    'The WaBarbers chair: black leather, gold light.', 'A valet handing back car keys at a customer\'s gate.'];
+  return '<section class="hm-top hm-bleed" aria-labelledby="hm-h1"><div class="hm-in">'
+      + '<h1 id="hm-h1">Clean car<em>.</em> Fresh cut<em>.</em></h1>'
+      + '<p class="hm-sub"><span>' + ic('clock') + 'Open 07:00 – 19:00, every day</span><span>' + ic('truck') + 'We can pick up your car</span></p>'
+      + (main.length ? '<div class="pk-main hm-doors" id="hm-doors">' + main.map(d => big(d).replace('<span class="pk-top">', '<span class="pk-ph" aria-hidden="true"></span><span class="pk-top">')).join('') + '</div>' : '')
+    + '</div></section>'
+    + (more.length ? '<section class="hm-sec hm-more"><header class="hm-h"><h2>More services</h2></header><div class="pk-more">' + more.map(small).join('') + '</div></section>' : '')
+    + (plans.length ? '<section class="hm-sec hm-clubs-s"><header class="hm-h"><p class="hm-k">' + ic('crown') + ' Monthly plans</p><h2>Regulars pay less.</h2></header><div class="hm-clubs">' + plans.map(club).join('') + '</div></section>' : '')
     + '<section class="hm-sec hm-gal-s"><header class="hm-h"><p class="hm-k">' + ic('camera') + ' Inside the bay</p><h2>Come and see.</h2></header><div class="hm-gal">' + gallery.map((g, i) => ph(g, i === 0 ? 'big' : '')).join('') + '</div></section>'
-    + (more.length ? '<section class="hm-sec"><header class="hm-h"><p class="hm-k">' + ic('sparkle') + ' Also in the bay</p><h2>More services</h2></header><div class="pk-more">' + more.map(small).join('') + '</div></section>' : '')
-    + (plans.length ? '<section class="hm-sec hm-clubs-s"><header class="hm-h"><p class="hm-k">' + ic('crown') + ' Memberships</p><h2>Regulars pay less.</h2><p>Monthly packages for the car and the chair. Pay once a month and save on every visit.</p></header><div class="hm-clubs">' + plans.map(club).join('') + '</div></section>' : '')
-    + '<section class="hm-end hm-bleed"><div class="hm-in"><p class="hm-k">Open for bookings</p><h2>Ready when you are<em>.</em></h2><div class="hm-ctas">' + cta('wash', 'Book a wash') + cta('kinyozi', 'Book a cut')
-      + (bizWa() ? '<a class="hm-btn ghost" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi ' + (S.cat.business || '') + ', ')) + '">' + ic('chat') + 'WhatsApp us</a>' : '') + '</div></div></section>';
+    + (bizWa() ? '<section class="hm-sec hm-ask"><div class="hm-ask-in">' + ic('chat') + '<div><h2>Questions?</h2><p>Chat with us on WhatsApp.</p></div><a class="hm-btn gold" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi ' + (S.cat.business || '') + ', ')) + '">WhatsApp us <span aria-hidden="true">→</span></a></div></section>' : '');
 }
 function viewBook() {
   if (S.token && !S.portal) return '<div class="empty"><h2>This link doesn\'t work any more</h2><p>' + esc(S.loadErr || '') + '</p>' + (bizWa() ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, my booking link isn\'t working.')) + '">Ask us on WhatsApp</a>' : '') + '</div>';
@@ -313,8 +294,8 @@ function viewBook() {
         + (l.sizes.length > 1 ? '<button class="icon-btn" data-act="sz-del" data-i="' + i + '" data-k="' + k + '" aria-label="Remove piece ' + (k + 1) + '">×</button>' : '') + '</div>').join('')
       + '<button class="btn ghost sm" data-act="sz-add" data-i="' + i + '">+ Add another piece</button></div></div>';
     return '<div class="line"><span class="ln"><span>' + esc(s.name) + '</span>' + (m ? '<span class="pill p-member">Covered by ' + esc(m.plan_name) + '</span>' : '') + '</span><div class="qty"><button class="icon-btn" data-act="qty" data-i="' + i + '" data-d="-1" aria-label="One less">−</button><span>' + l.qty + '</span><button class="icon-btn" data-act="qty" data-i="' + i + '" data-d="1" aria-label="One more">+</button></div><span class="pfix">' + (m ? '0' : s.price ? num(s.price * l.qty) : 'Quote') + '</span><button class="icon-btn" data-act="del" data-i="' + i + '" aria-label="Remove ' + esc(s.name) + '">×</button></div>';
-  }).join('') + '</div>' : '<p class="muted" style="margin:0">Tap what you need. Tap again to add one more.</p>';
-  const addMore = f.lines.length && depts().length > 1 ? '<a class="add-more" href="#" data-act="pick" data-v="">+ Add another service, like ' + esc(f.tab === 'kinyozi' ? 'a car wash' : 'a haircut') + '</a>' : '';
+  }).join('') + '</div>' : '<p class="muted tap-hint" style="margin:0">' + ic('check', 'lb-ic') + 'Tap to add. Tap again for one more.</p>';
+  const addMore = f.lines.length && depts().length > 1 ? '<a class="add-more" href="#" data-act="pick" data-v="">+ Add ' + esc(f.tab === 'kinyozi' ? 'a car wash' : 'a haircut') + '</a>' : '';
   const pics = PHOTOS[f.tab] ? '<div class="mini-gal' + swap + '">' + PHOTOS[f.tab].map((p, k) => ph(p, k === 0 ? 'big' : '')).join('') + '</div>' : '';
   const step1 = brandCard(BRAND[f.tab]).replace('class="bcard ', 'class="bcard' + swap + ' ') + pics + '<section class="step">' + stH(1, 'check', PICK_HEAD[f.tab] || 'What do you need?') + grid + lines + addMore + '</section>';
   const step2 = fd.length ? '<section class="step">' + stH(2, 'key', 'How?') + fd.map(d => '<div class="how"><span class="lbl"><span class="dc">' + ic(DEPT_IC[d] || 'check') + '</span>' + esc(deptName(d)) + '</span><div class="seg big pics">' + DEPT_FLOWS[d].map(fl => '<button data-act="flow" data-d="' + d + '" data-v="' + fl + '" aria-pressed="' + (flowOf(d) === fl) + '">' + ic(FLOW_IC[fl] || 'check') + '<span>' + esc(flowLabel(fl, d, 'customer')) + '</span></button>').join('') + '</div></div>').join('') + '</section>' : '';
@@ -341,7 +322,7 @@ function viewBook() {
     + '<div class="field">' + lb('b-notes', 'note', 'Notes (optional)') + '<textarea id="b-notes" data-f="notes" rows="2" placeholder="Anything we should know">' + esc(f.notes) + '</textarea></div>'
     + (f.err ? '<div class="err" role="alert">' + esc(f.err) + '</div>' : '') + '</section>' : '';
   const myPlans = (S.cat.plans || []).filter(p => p.dept === f.tab);
-  const plans = !f.portal && myPlans.length ? '<section class="step" id="plans">' + stH(0, 'crown', 'Monthly packages') + '<p class="muted" style="margin:0">Pay once a month and save. Ask us on WhatsApp to join.</p><div class="plans">' + myPlans.map(p => '<div class="plan"><h3>' + esc(p.name) + '</h3><b class="pr">KES ' + num(p.price) + ' <small>/ ' + (p.days === 30 ? 'month' : p.days + ' days') + '</small></b><p>' + esc(p.perks || (p.allowance + ' visits')) + '</p>' + (bizWa() ? '<a class="btn ghost sm" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Ask to join</a>' : '') + '</div>').join('') + '</div></section>' : '';
+  const plans = !f.portal && myPlans.length ? '<section class="step" id="plans">' + stH(0, 'crown', 'Monthly packages') + '<p class="muted" style="margin:0">Pay monthly. Save on every visit.</p><div class="plans">' + myPlans.map(p => '<div class="plan"><h3>' + esc(p.name) + '</h3><b class="pr">KES ' + num(p.price) + ' <small>/ ' + (p.days === 30 ? 'month' : p.days + ' days') + '</small></b><p>' + esc(p.perks || (p.allowance + ' visits')) + '</p>' + (bizWa() ? '<a class="btn ghost sm" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Join</a>' : '') + '</div>').join('') + '</div></section>' : '';
   return hero + step1 + step2 + step3 + step4 + step5 + step6 + plans;
 }
 function addH(t, h) { const [a, b] = t.split(':').map(Number); return String(Math.min(23, a + h)).padStart(2, '0') + ':' + String(b).padStart(2, '0'); }
@@ -356,7 +337,7 @@ function renderPaybar() {
   if (w.dataset.k !== key) {
     w.dataset.k = key;
     w.querySelector('.pb-list').innerHTML = n ? '<ul class="pb-lines">' + f.lines.map((l, i) => { const s = svc(l.sid); if (!s) return ''; return '<li><span>' + esc(s.name) + (qtyNote(l) ? ' <small>' + esc(qtyNote(l).replace(/^ · | ×/, '')) + '</small>' : '') + '</span><b>' + (e.cover[i] ? 'Member' : s.price ? num(s.price * l.qty) : 'Quote') + '</b></li>'; }).join('')
-      + (e.fee ? '<li><span>Pickup & drop-off</span><b>' + num(e.fee) + '</b></li>' : '') + '</ul>' : '<p class="pb-empty">Pick a service to start. You can mix brands in one booking.</p>';
+      + (e.fee ? '<li><span>Pickup & drop-off</span><b>' + num(e.fee) + '</b></li>' : '') + '</ul>' : '<p class="pb-empty">Pick a service to start.</p>';
   }
   countTo(w.querySelector('.sum b'), n ? e.total : 0, n && e.quote ? '+' : '');
   w.querySelector('.sum span').textContent = n ? n + (n === 1 ? ' service' : ' services') + (e.fee ? ' · incl. KES ' + num(e.fee) + ' pickup' : '') + (e.quote ? ' · some priced on inspection' : '') : 'Pick a service to start';
