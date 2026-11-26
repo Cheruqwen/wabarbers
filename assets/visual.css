@@ -1,0 +1,164 @@
+/* PitStop 87 · visual cues
+   Pictures before words: an icon on every service, step, choice and field, photo slots that say what
+   the ideal picture is, and WaBarbers titles in Bebas Neue (Cormorant stays for the brand name only).
+   Loads last on index.html. */
+
+/* ---------- WaBarbers type: Bebas Neue titles and prices, Montserrat text, Cormorant for the name ---------- */
+:root{--f-bebas:'Bebas Neue','Oswald',Impact,'Arial Narrow',sans-serif}
+[data-brand="wab"]:not(#_),.pk.wab,.bcard.wab,.hm-club[data-brand="wab"]{--f-head:var(--f-bebas);--f-num:var(--f-bebas);--head-adj:none;--w-head:400;font-synthesis:none}
+[data-brand="wab"]:not(#_) header.top .brand b{font-family:var(--f-serif);font-size-adjust:.5;font-weight:700}
+[data-brand="wab"]:not(#_) .step>h2{font:400 30px/1 var(--f-bebas);letter-spacing:.035em;text-transform:none}
+[data-brand="wab"]:not(#_) .svc-grid.big .svc b{font:400 28px/1 var(--f-bebas);letter-spacing:.03em}
+[data-brand="wab"]:not(#_) .svc-grid.big .svc .sn{font:600 15px/1.25 var(--f-house)}
+.pk.wab .pk-t b{font:400 44px/.92 var(--f-bebas);letter-spacing:.04em}
+.pk.wab .pk-list b{font:400 26px/1 var(--f-bebas);letter-spacing:.03em}
+[data-brand="wab"]:not(#_) .paybar .sum b{font-weight:400;letter-spacing:.03em}
+[data-brand="wab"]:not(#_) .plan h3{font:400 26px/1 var(--f-bebas);letter-spacing:.03em;text-transform:none}
+[data-brand="wab"]:not(#_) .plan b.pr{font-weight:400;font-size:32px;letter-spacing:.02em}
+[data-brand="wab"]:not(#_) .line .pfix,[data-brand="wab"]:not(#_) .pb-lines li b{font-weight:400;font-size:21px;letter-spacing:.03em}
+[data-brand="wab"]:not(#_) .mcard .left{font-family:var(--f-bebas);font-weight:400}
+.hm-club[data-brand="wab"] h3{font:400 30px/1 var(--f-bebas);letter-spacing:.04em}
+.hm-club[data-brand="wab"] .hm-club-p b{font:400 56px/.9 var(--f-bebas);letter-spacing:.02em}
+[data-brand="wab"]:not(#_) .done-card h1,[data-brand="wab"]:not(#_) .status-big{font-weight:400;letter-spacing:.03em}
+
+/* ---------- icons ---------- */
+.ic{width:1.2em;height:1.2em;flex:0 0 auto;display:inline-block;vertical-align:-.22em}
+.btn .ic,.hm-btn .ic{width:19px;height:19px}
+.hd-btn{gap:7px}
+.hd-btn .ic{width:17px;height:17px}
+
+/* field labels carry their picture */
+.field label,.pub .lbl{display:flex;align-items:center;gap:7px}
+.lb-ic{width:17px;height:17px;color:var(--primary-text)}
+
+/* step headings: a picture badge with the step number on its corner */
+.step>h2{align-items:center}
+.step>h2 i.st,[data-brand="ww"]:not(#_) .step>h2 i.st{position:relative;flex:0 0 auto;width:48px;height:48px;display:grid;place-items:center;border-radius:var(--r-md);background:var(--brand-soft);color:var(--primary-text);box-shadow:none;font:inherit;line-height:1}
+.step>h2 i.st .ic{width:26px;height:26px}
+.step>h2 i.st span{position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;padding:0 6px;box-sizing:border-box;border-radius:999px;background:var(--primary);color:var(--primary-ink);font:700 12px/22px var(--f-house);text-align:center;box-shadow:0 0 0 3px var(--surface)}
+[data-brand="ww"]:not(#_) .step>h2 i.st{border-radius:16px}
+[data-brand="wab"]:not(#_) .step>h2 i.st{border-radius:2px;background:transparent;color:var(--primary-text);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--primary) 60%,transparent);width:48px;height:48px}
+[data-brand="wab"]:not(#_) .step>h2 i.st span{border-radius:2px;font-family:var(--f-house);font-weight:600}
+
+/* service tiles: picture on top, name, price at the bottom */
+.svc-grid.big .svc{min-height:138px}
+.svc-ic{display:grid;place-items:center;width:46px;height:46px;margin-bottom:8px;border-radius:var(--r-md);background:var(--brand-soft);color:var(--primary-text);transition:background-color .25s,color .25s}
+.svc-ic .ic{width:27px;height:27px}
+.svc[aria-pressed="true"] .svc-ic{background:var(--primary);color:var(--primary-ink)}
+[data-brand="ww"]:not(#_) .svc-ic{border-radius:15px}
+[data-brand="wab"]:not(#_) .svc-ic{border-radius:2px;background:transparent;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--primary) 45%,transparent)}
+[data-brand="wab"]:not(#_) .svc[aria-pressed="true"] .svc-ic{background:var(--primary);color:var(--primary-ink)}
+.sgroup>h3{align-items:center}
+.sg-ic{width:19px;height:19px;color:var(--primary-text);margin-right:2px}
+
+/* "How?": two big picture choices instead of a thin switch */
+.how .lbl{font-weight:700;color:var(--fg)}
+.how .dc,.pk-mk.dc,.pk-ic.dc{display:inline-grid;place-items:center;padding:0;color:var(--primary-text)}
+.how .dc{width:30px;height:30px;border-radius:var(--r-sm)}
+.how .dc .ic{width:19px;height:19px}
+.pk-ic.dc .ic,.pk-mk.dc .ic{width:26px;height:26px}
+.pub .seg.pics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;background:none;padding:0;gap:10px}
+.pub .seg.pics button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:112px;padding:16px 10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:var(--r-md);font:600 14.5px/1.25 var(--f-ui);text-align:center;box-shadow:none}
+.pub .seg.pics button .ic{width:38px;height:38px;color:var(--primary-text)}
+.pub .seg.pics button[aria-pressed="true"]{border-color:var(--primary);background:var(--brand-soft);box-shadow:inset 0 0 0 1px var(--primary)}
+.pub .seg.pics button[aria-pressed="true"]::after{content:"";position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/14px no-repeat}
+[data-brand="ww"]:not(#_) .seg.pics button{border-radius:18px}
+[data-brand="wab"]:not(#_) .seg.pics button{border-radius:2px;background:var(--bg)}
+[data-brand="wab"]:not(#_) .seg.pics button[aria-pressed="true"]{background:var(--brand-soft)}
+[data-brand="wab"]:not(#_) .seg.pics button[aria-pressed="true"]::after{border-radius:2px;background-color:var(--primary);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b0a08' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E")}
+
+/* front-door rows: a picture per line */
+.pk-li{width:20px;height:20px;margin-right:10px;vertical-align:-4px;opacity:.9}
+.pk.ww .pk-li{color:var(--ww-sea-foam)}
+.pk.wab .pk-li{color:var(--wab-champagne-gold)}
+.pk-list>span>span{display:inline-flex;align-items:center}
+
+/* pay bar: the main button points forward */
+.paybar [data-act=submit]::after{content:"→";margin-left:10px;font-family:var(--f-house)}
+.paybar [data-act=submit]:disabled::after{content:none}
+
+/* tracker: each step has its picture (customer pages) */
+.track.pics li{flex-basis:84px;font-size:12px;gap:7px}
+.track.pics li::before{top:18px;height:3px}
+.track.pics .dot{width:38px;height:38px;display:grid;place-items:center;color:var(--muted);border-width:2px}
+.track.pics .dot .ic{width:19px;height:19px}
+.track.pics li.done .dot{color:var(--ok-ink)}
+.track.pics li.now .dot{color:var(--accent-ink)}
+.jmeta span{display:inline-flex;align-items:center;gap:5px}
+.jmeta .ic{width:15px;height:15px}
+
+/* ---------- photo slots ---------- */
+.shot{position:relative;isolation:isolate;margin:0;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;gap:10px;padding:16px;overflow:hidden;
+  border-radius:var(--r-lg);color:var(--fg);border:1.5px dashed color-mix(in srgb,var(--fg) 24%,transparent);
+  background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--fg) 6%,transparent) 0 1px,transparent 1px 11px),linear-gradient(160deg,var(--surface-2),var(--brand-soft))}
+.shot::before{content:"";position:absolute;z-index:-1;left:50%;top:42%;width:72px;height:72px;transform:translate(-50%,-50%);background:currentColor;opacity:.13;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5h4l2-3h6l2 3h4V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='12' cy='13.5' r='3.6'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5h4l2-3h6l2 3h4V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='12' cy='13.5' r='3.6'/%3E%3C/svg%3E") center/contain no-repeat}
+.shot-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 10px 6px 8px;border-radius:999px;background:var(--fg);color:var(--bg);font:700 10.5px/1 var(--f-house);letter-spacing:.1em;text-transform:uppercase}
+.shot-tag .ic{width:14px;height:14px}
+.shot figcaption{font:500 13.5px/1.45 var(--f-house);max-width:48ch;color:var(--fg);text-wrap:pretty}
+.shot.has{padding:0;border:0;background:var(--surface-2)}
+.shot.has::before{content:none}
+.shot.has img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+[data-brand="ww"]:not(#_) .shot{border-radius:22px;border-color:color-mix(in srgb,var(--ww-whale-blue) 35%,transparent)}
+[data-brand="wab"]:not(#_) .shot{border-radius:2px;border-color:color-mix(in srgb,var(--primary) 40%,transparent);background:repeating-linear-gradient(135deg,rgba(201,164,92,.07) 0 1px,transparent 1px 11px),linear-gradient(160deg,#17140f,var(--wab-lacquer-black));color:var(--wab-cream)}
+[data-brand="wab"]:not(#_) .shot::before{color:var(--wab-champagne-gold);opacity:.22}
+[data-brand="wab"]:not(#_) .shot-tag{background:var(--wab-champagne-gold);color:var(--wab-lacquer-black);border-radius:2px}
+
+.shot:not(.big)::before{left:auto;top:16px;right:16px;width:40px;height:40px;transform:none}
+
+/* each mini-site opens with three photo slots under its brand card */
+.mini-gal{display:grid;gap:10px}
+@media (min-width:640px){
+  .mini-gal{grid-template-columns:1.55fr 1fr;grid-template-rows:148px 148px}
+  .mini-gal .shot{min-height:0}
+  .mini-gal .shot.big{grid-row:span 2}
+  .mini-gal .shot:not(.big) figcaption{font-size:12.5px}
+}
+@media (max-width:639px){
+  .mini-gal{grid-auto-flow:column;grid-auto-columns:82%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px}
+  .mini-gal::-webkit-scrollbar{display:none}
+  .mini-gal .shot{scroll-snap-align:start;min-height:200px}
+}
+
+/* ---------- home page additions ---------- */
+.hm-k{display:flex;align-items:center;gap:10px}
+.hm-k .ic{width:18px;height:18px;color:var(--fg)}
+.hm-end .hm-k .ic{color:var(--house-plate)}
+/* hero facts: a picture over each */
+.hm-facts .ic{width:24px;height:24px;color:var(--house-plate);margin-bottom:10px;display:block}
+@media (min-width:900px){
+  .hm-facts div{display:grid!important;grid-template-columns:auto auto 1fr;align-items:center;column-gap:14px}
+  .hm-facts .ic{margin:0}
+}
+/* how it works: a picture tile, a small step number, then the words */
+.hm-steps li{position:relative;grid-template-columns:auto minmax(0,1fr);row-gap:6px}
+.hm-si{grid-row:1/span 3;display:grid;place-items:center;width:68px;height:68px;border-radius:var(--radius-lg);background:var(--house-asphalt);color:var(--house-plate);box-shadow:inset 0 0 0 1px var(--line)}
+.hm-si .ic{width:34px;height:34px}
+.hm-steps .hm-n{grid-row:auto;font:700 13px/1 var(--f-board);letter-spacing:.2em;color:var(--muted);min-width:0;margin:6px 0 0}
+.hm-steps .hm-n::before{content:"Step "}
+.hm-next{display:none}
+@media (min-width:960px){
+  .hm-steps li{grid-template-columns:1fr;row-gap:10px;padding-right:24px}
+  .hm-si{grid-row:auto;width:84px;height:84px;margin-bottom:14px}
+  .hm-si .ic{width:42px;height:42px}
+  .hm-steps .hm-n{margin:0}
+  .hm-next{display:grid;place-items:center;position:absolute;right:-6px;top:56px;width:40px;height:40px;border-radius:50%;background:var(--bg);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+  .hm-next .ic{width:18px;height:18px}
+}
+/* inside the bay: four photo slots */
+.hm-gal{display:grid;gap:12px}
+@media (min-width:760px){
+  .hm-gal{grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:240px 240px}
+  .hm-gal .shot.big{grid-row:span 2}
+  .hm-gal .shot:last-child{grid-column:span 2}
+  .hm-gal .shot{min-height:0;padding:20px}
+}
+@media (max-width:759px){
+  .hm-gal{grid-auto-flow:column;grid-auto-columns:82%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-inline:calc(-1 * var(--hm-pad));padding-inline:var(--hm-pad);scroll-padding-inline:var(--hm-pad)}
+  .hm-gal::-webkit-scrollbar{display:none}
+  .hm-gal .shot{scroll-snap-align:start;min-height:240px}
+}
+.at-home .shot{border-radius:var(--radius-lg)}
+/* club cards: a crown on each */
+.hm-club-k{display:flex;align-items:center;gap:8px}

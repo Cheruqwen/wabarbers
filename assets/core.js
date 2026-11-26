@@ -1,4 +1,5 @@
 // PitStop 87 · shared code for the public site and the staff app
+import { ic, STATUS_IC } from './icons.js';
 export const CFG = Object.assign({
   supabaseUrl: '', supabaseAnonKey: '', loginDomain: 'staff.pitstop-app.com', siteUrl: ''
 }, window.PITSTOP_CONFIG || {});
@@ -250,11 +251,11 @@ export function busy(el) { const a = document.activeElement; return !!(a && el &
 export function tracker(j, who) {
   const f = STEPS[j.flow]; if (!f) return '';
   const idx = f.indexOf(j.status);
-  return '<ol class="track" aria-label="Progress">' + f.map((s, i) => {
+  return '<ol class="track' + (who === 'customer' ? ' pics' : '') + '" aria-label="Progress">' + f.map((s, i) => {
     const h = (j.history || []).filter(x => x.s === s).pop();
     const c = j.status === 'cancelled' ? '' : i < idx ? 'done' : i === idx ? (i === f.length - 1 ? 'done' : 'now') : '';
     const lab = (who === 'customer' && i === 0 && !j.confirmed) ? 'Requested' : statusLabel(s, Object.assign({}, j, { confirmed: true }), who);
-    return '<li class="' + c + '"><span class="dot"></span><span class="tl">' + esc(lab) + '</span><span class="tt">' + (h ? esc(hm(new Date(h.at))) : '') + '</span></li>';
+    return '<li class="' + c + '"><span class="dot">' + (who === 'customer' ? ic(STATUS_IC[s] || 'check') : '') + '</span><span class="tl">' + esc(lab) + '</span><span class="tt">' + (h ? esc(hm(new Date(h.at))) : '') + '</span></li>';
   }).join('') + '</ol>';
 }
 export async function compressImage(file) {

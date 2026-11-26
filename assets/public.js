@@ -4,8 +4,25 @@ import {
   normPhone, showPhone, validPhone, wa, first, plate, links, DEPT, DEPT_FLOWS, TRIP, flowLabel, statusLabel,
   groupOf, tracker, toast, demoBanner, MON, BRAND, BRANDS, setBrand
 } from './core.js';
+import { ic, svcIcon, DEPT_IC, FLOW_IC } from './icons.js';
 
 const img = p => 'assets/' + p;
+/* Photo slots: until real photos are shot, each spot shows what the ideal picture is.
+   To use a real photo later, pass its path as the third argument (e.g. 'brand/foam.jpg'). */
+const ph = (desc, cls, src) => src
+  ? '<figure class="shot has ' + (cls || '') + '"><img src="' + img(src) + '" alt="' + esc(desc) + '" loading="lazy"></figure>'
+  : '<figure class="shot ' + (cls || '') + '"><span class="shot-tag">' + ic('camera') + 'Photo to come</span><figcaption>' + esc(desc) + '</figcaption></figure>';
+const PHOTOS = {
+  wash: ['Foam cannon covering a white saloon in the bay at dusk, blue lights on the wet floor, washer in a Whale Wash tee.', 'Close-up: a microfibre towel drying a shiny bonnet, water beading.', 'A clean boda boda parked beside a muddy one.'],
+  carpet: ['A large carpet hanging in the sun after washing, colours bright and fresh.', 'Close-up: a brush working foam into a carpet.', 'Rolled carpets with numbered tags, ready to go home.'],
+  kinyozi: ['A barber shaping a fade, side profile, warm gold light, mirrors behind.', 'Hot towel shave, client relaxed in the leather chair.', 'Clippers, comb and razor laid out on the black counter.'],
+  garage: ['Mechanic under an open bonnet, work light on, tools laid out.', 'A diagnostic reader plugged in, screen clearly visible.', 'A car up on the ramp in a clean workshop.'],
+  nails: ['Close-up of a fresh gel manicure in soft pink, hands resting on a white towel.', 'Nail tech at work with polish colours lined up.', 'The pedicure chair, calm and bright.'],
+};
+// a field label with its picture
+const lb = (forId, icon, text) => '<label for="' + forId + '">' + ic(icon, 'lb-ic') + esc(text) + '</label>';
+// a step heading: picture badge with the step number on its corner
+const stH = (n, icon, text) => '<h2><i class="st">' + ic(icon) + (n ? '<span>' + n + '</span>' : '') + '</i>' + esc(text) + '</h2>';
 function brandCard(b) {
   if (b === 'ww') return '<div class="bcard ww"><img src="' + img(BRANDS.ww.mark) + '" alt=""><div class="bt"><b>Whale <span>Wash</span></b><small>' + esc(BRANDS.ww.line) + '</small></div></div>';
   if (b === 'wab') return '<div class="bcard wab"><img class="mk" src="' + img(BRANDS.wab.mark) + '" alt=""><div class="bt"><img class="wm" src="' + img(BRANDS.wab.word) + '" alt="WaBarbers Kinyozi"><small>' + esc(BRANDS.wab.line) + '</small></div></div>';
@@ -47,7 +64,7 @@ async function boot() {
   $('#home-link').href = links.home;
   $('#biz').textContent = S.cat.business || 'PitStop 87';
   const w = $('#hd-wa');
-  if (bizWa()) { w.href = wa(bizWa(), 'Hi ' + S.cat.business + ', '); w.hidden = false; }
+  if (bizWa()) { w.href = wa(bizWa(), 'Hi ' + S.cat.business + ', '); w.innerHTML = ic('chat') + '<span>WhatsApp us</span>'; w.hidden = false; }
   if (DEMO) { $('#banner-in').innerHTML = demoBanner(' <a href="' + esc(links.staff) + '">Open the staff app</a>'); $('#banner').hidden = false; }
   else if (CFG.local) { $('#banner-in').innerHTML = '<span>Test version running on a laptop. Bookings here are real for testing only.</span> <a href="' + esc(links.staff) + '">Open the staff app</a>'; $('#banner').hidden = false; }
   // footer: one card per brand that's open for booking; tapping one jumps to its services
@@ -208,13 +225,13 @@ function viewPick() {
   const f = F(); const ds = depts(); const fd = fDepts();
   const main = ds.filter(d => MAIN_DEPTS.includes(d.key)).sort((a, b) => MAIN_DEPTS.indexOf(a.key) - MAIN_DEPTS.indexOf(b.key));
   const more = ds.filter(d => !MAIN_DEPTS.includes(d.key));
-  const mark = (d, cls) => { const b = BRAND[d.key]; return b ? '<img class="' + cls + ' ' + b + '" src="' + img(BRANDS[b].mark) + '" alt="">' : '<span class="' + cls + ' dc">' + esc(DEPT[d.key].code) + '</span>'; };
+  const mark = (d, cls) => { const b = BRAND[d.key]; return b ? '<img class="' + cls + ' ' + b + '" src="' + img(BRANDS[b].mark) + '" alt="">' : '<span class="' + cls + ' dc">' + ic(DEPT_IC[d.key] || 'check') + '</span>'; };
   const price = (p, from) => p ? (from ? '<small>from</small> ' : '') + num(p) : 'Quote';
   const big = d => {
     const x = deptSummary(d.key); const b = BRAND[d.key] || '';
     return '<a class="pk ' + b + '" href="' + pickHref(d.key) + '" data-act="pick" data-v="' + d.key + '">'
       + '<span class="pk-top">' + mark(d, 'pk-mk') + '<span class="pk-t"><b>' + esc(d.name) + '</b>' + (b ? '<small>' + esc(BRANDS[b].name) + '</small>' : '') + '</span></span>'
-      + '<span class="pk-list">' + x.rows.map(r => '<span><span>' + esc(r.name) + '</span><b>' + price(r.price, r.from) + '</b></span>').join('') + '</span>'
+      + '<span class="pk-list">' + x.rows.map(r => '<span><span>' + ic(svcIcon(d.key, r.name), 'pk-li') + esc(r.name) + '</span><b>' + price(r.price, r.from) + '</b></span>').join('') + '</span>'
       + '<span class="pk-cta">' + esc(PICK_CTA[d.key] || 'See prices') + ' <span aria-hidden="true">→</span></span></a>';
   };
   const small = d => { const x = deptSummary(d.key);
@@ -249,26 +266,29 @@ function viewHome(main, more, big, small) {
       + '<p class="hm-club-p"><b>' + num(p.price) + '</b><small>KES / ' + (p.days === 30 ? 'month' : p.days + ' days') + '</small></p><p class="hm-club-d">' + esc(p.perks || (p.allowance + ' visits')) + '</p>'
       + (bizWa() ? '<a class="hm-club-a" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Ask to join <span aria-hidden="true">→</span></a>' : '') + '</article>'; };
   const steps = [
-    ['Pick a service and a time', 'See every price before you book, then choose a slot between 07:00 and 19:00, any day of the week.'],
-    ['Come in, or we come to you', 'Drive into the bay, or ' + where + '.'],
-    ['Follow it live, then pay', 'You get a booking code and a live tracking link. Pay by M-Pesa, cash or card when the work is done.'],
+    ['calendar', 'Pick a service and a time', 'See the price first. Choose a time from 07:00 to 19:00, any day.'],
+    ['truck', 'Come in, or we come to you', 'Drive into the bay, or ' + where + '.'],
+    ['phone', 'Follow it live, then pay', 'Get a booking code and a live link. Pay by M-Pesa, cash or card when it is done.'],
   ];
+  const gallery = ['The whole team in branded tees, standing in front of both shopfronts at dusk, smiling.', 'A freshly washed car rolling out of the bay, water still dripping, low angle.',
+    'The WaBarbers chair from the side: black leather, gold light, mirror glow.', 'A valet handing car keys back to a customer at their gate.'];
   return '<section class="hm-hero hm-bleed" aria-labelledby="hm-h1"><div class="hm-photo" aria-hidden="true"></div><div class="hm-in hm-hero-in">'
       + '<p class="hm-eye"><i></i>' + esc(S.cat.business || 'PitStop 87') + ' · Car wash · Kinyozi</p>'
       + '<h1 id="hm-h1"><span>Drop the keys<em>.</em></span> <span>Take a seat<em>.</em></span></h1>'
       + '<p class="hm-lede">Whale Wash and WaBarbers share one bay. Book a wash and a cut in one go, or let the valet take the car while you sit back.</p>'
       + '<div class="hm-ctas">' + cta('wash', 'Book a wash') + cta('kinyozi', 'Book a cut') + (main.length ? '' : '<a class="hm-btn" href="#" data-act="jump" data-v="hm-doors">See services <span aria-hidden="true">→</span></a>') + '</div>'
-      + '<dl class="hm-facts"><div><dt>07–19</dt><dd>Bookings every day</dd></div><div><dt>Valet</dt><dd>Pickup and drop-off</dd></div><div><dt>Live</dt><dd>Track every step</dd></div></dl>'
+      + '<dl class="hm-facts"><div>' + ic('clock') + '<dt>07–19</dt><dd>Every day</dd></div><div>' + ic('truck') + '<dt>Valet</dt><dd>Pickup and drop-off</dd></div><div>' + ic('live') + '<dt>Live</dt><dd>Track every step</dd></div></dl>'
     + '</div><a class="hm-cue" href="#" data-act="jump" data-v="hm-doors" aria-label="Scroll to services"><span></span></a></section>'
     + (tick ? '<div class="hm-tick hm-bleed" aria-hidden="true"><div class="hm-tick-r"><div>' + tick + '</div><div>' + tick + '</div></div></div>' : '')
-    + (main.length ? '<section class="hm-sec" id="hm-doors"><header class="hm-h"><p class="hm-k">01 / The bay</p><h2>Two houses. One stop.</h2><p>A car wash in blue and white, a kinyozi in black and gold. Choose your door, or book both together.</p></header>'
+    + (main.length ? '<section class="hm-sec" id="hm-doors"><header class="hm-h"><p class="hm-k">' + ic('shop') + ' The bay</p><h2>Two houses. One stop.</h2><p>A car wash in blue and white, a kinyozi in black and gold. Choose your door, or book both together.</p></header>'
       + '<div class="pk-main hm-doors">' + main.map(d => big(d).replace('<span class="pk-top">', '<span class="pk-ph" aria-hidden="true"></span><span class="pk-top">')).join('') + '</div></section>' : '')
-    + '<section class="hm-sec hm-how"><header class="hm-h"><p class="hm-k">02 / How it works</p><h2>Booked in a minute.<br>Followed to the finish.</h2></header><ol class="hm-steps">'
-      + steps.map((s, i) => '<li><span class="hm-n">0' + (i + 1) + '</span><h3>' + esc(s[0]) + '</h3><p>' + esc(s[1]) + '</p></li>').join('') + '</ol></section>'
-    + (more.length ? '<section class="hm-sec"><header class="hm-h"><p class="hm-k">03 / Also in the bay</p><h2>More services</h2></header><div class="pk-more">' + more.map(small).join('') + '</div></section>' : '')
-    + (plans.length ? '<section class="hm-sec hm-clubs-s"><header class="hm-h"><p class="hm-k">' + (more.length ? '04' : '03') + ' / Memberships</p><h2>Regulars pay less.</h2><p>Monthly packages for the car and the chair. Pay once a month and save on every visit.</p></header><div class="hm-clubs">' + plans.map(club).join('') + '</div></section>' : '')
+    + '<section class="hm-sec hm-how"><header class="hm-h"><p class="hm-k">' + ic('key') + ' How it works</p><h2>Booked in a minute.<br>Followed to the finish.</h2></header><ol class="hm-steps">'
+      + steps.map((s, i) => '<li><span class="hm-si">' + ic(s[0]) + '</span><span class="hm-n">0' + (i + 1) + '</span><h3>' + esc(s[1]) + '</h3><p>' + esc(s[2]) + '</p>' + (i < 2 ? '<span class="hm-next" aria-hidden="true">' + ic('arrow') + '</span>' : '') + '</li>').join('') + '</ol></section>'
+    + '<section class="hm-sec hm-gal-s"><header class="hm-h"><p class="hm-k">' + ic('camera') + ' Inside the bay</p><h2>Come and see.</h2></header><div class="hm-gal">' + gallery.map((g, i) => ph(g, i === 0 ? 'big' : '')).join('') + '</div></section>'
+    + (more.length ? '<section class="hm-sec"><header class="hm-h"><p class="hm-k">' + ic('sparkle') + ' Also in the bay</p><h2>More services</h2></header><div class="pk-more">' + more.map(small).join('') + '</div></section>' : '')
+    + (plans.length ? '<section class="hm-sec hm-clubs-s"><header class="hm-h"><p class="hm-k">' + ic('crown') + ' Memberships</p><h2>Regulars pay less.</h2><p>Monthly packages for the car and the chair. Pay once a month and save on every visit.</p></header><div class="hm-clubs">' + plans.map(club).join('') + '</div></section>' : '')
     + '<section class="hm-end hm-bleed"><div class="hm-in"><p class="hm-k">Open for bookings</p><h2>Ready when you are<em>.</em></h2><div class="hm-ctas">' + cta('wash', 'Book a wash') + cta('kinyozi', 'Book a cut')
-      + (bizWa() ? '<a class="hm-btn ghost" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi ' + (S.cat.business || '') + ', ')) + '">WhatsApp us</a>' : '') + '</div></div></section>';
+      + (bizWa() ? '<a class="hm-btn ghost" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi ' + (S.cat.business || '') + ', ')) + '">' + ic('chat') + 'WhatsApp us</a>' : '') + '</div></div></section>';
 }
 function viewBook() {
   if (S.token && !S.portal) return '<div class="empty"><h2>This link doesn\'t work any more</h2><p>' + esc(S.loadErr || '') + '</p>' + (bizWa() ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, my booking link isn\'t working.')) + '">Ask us on WhatsApp</a>' : '') + '</div>';
@@ -277,10 +297,10 @@ function viewBook() {
   const hero = '<div class="crumb"><a href="#" data-act="pick" data-v="">← All services</a>' + (f.portal ? '<a class="link" href="#me/' + esc(S.token) + '">Your page</a>' : '') + '</div>';
   const swap = S.lastTab && S.lastTab !== f.tab ? ' swap' : ''; // only animate when the department actually changed
   let i = 0;
-  const grid = svcGroups(f.tab).map(g => '<div class="sgroup">' + (g.name ? '<h3>' + esc(g.name) + (GROUP_HINT[g.name] ? ' <small>' + esc(GROUP_HINT[g.name]) + '</small>' : '') + '</h3>' : '')
+  const grid = svcGroups(f.tab).map(g => '<div class="sgroup">' + (g.name ? '<h3>' + ic(svcIcon(f.tab, g.name), 'sg-ic') + esc(g.name) + (GROUP_HINT[g.name] ? ' <small>' + esc(GROUP_HINT[g.name]) + '</small>' : '') + '</h3>' : '')
     + '<div class="svc-grid big' + swap + '">' + g.items.map(({ s, item }) => {
       const l = f.lines.find(x => x.sid === s.id); const h = ITEM_HINT[item];
-      return '<button class="svc" style="--i:' + (i++) + '" data-act="add" data-sid="' + esc(s.id) + '" aria-pressed="' + !!l + '"><span class="sn">' + esc(item) + '</span>' + (h ? '<small class="sh">' + esc(h) + '</small>' : '') + '<b>' + (s.price ? 'KES ' + num(s.price) + (isSqft(s) ? ' per sq ft' : '') : 'Quote on inspection') + '</b>' + (l ? '<span class="q' + (S.pop === s.id ? ' pop' : '') + '">' + pieceCount(l) + '</span>' : '') + '</button>';
+      return '<button class="svc" style="--i:' + (i++) + '" data-act="add" data-sid="' + esc(s.id) + '" aria-pressed="' + !!l + '"><span class="svc-ic">' + ic(svcIcon(f.tab, s.name)) + '</span><span class="sn">' + esc(item) + '</span>' + (h ? '<small class="sh">' + esc(h) + '</small>' : '') + '<b>' + (s.price ? 'KES ' + num(s.price) + (isSqft(s) ? ' per sq ft' : '') : 'Quote on inspection') + '</b>' + (l ? '<span class="q' + (S.pop === s.id ? ' pop' : '') + '">' + pieceCount(l) + '</span>' : '') + '</button>';
     }).join('') + '</div></div>').join('');
   const lines = f.lines.length ? '<div class="lines">' + f.lines.map((l, i) => {
     const s = svc(l.sid); if (!s) return '';
@@ -295,32 +315,33 @@ function viewBook() {
     return '<div class="line"><span class="ln"><span>' + esc(s.name) + '</span>' + (m ? '<span class="pill p-member">Covered by ' + esc(m.plan_name) + '</span>' : '') + '</span><div class="qty"><button class="icon-btn" data-act="qty" data-i="' + i + '" data-d="-1" aria-label="One less">−</button><span>' + l.qty + '</span><button class="icon-btn" data-act="qty" data-i="' + i + '" data-d="1" aria-label="One more">+</button></div><span class="pfix">' + (m ? '0' : s.price ? num(s.price * l.qty) : 'Quote') + '</span><button class="icon-btn" data-act="del" data-i="' + i + '" aria-label="Remove ' + esc(s.name) + '">×</button></div>';
   }).join('') + '</div>' : '<p class="muted" style="margin:0">Tap what you need. Tap again to add one more.</p>';
   const addMore = f.lines.length && depts().length > 1 ? '<a class="add-more" href="#" data-act="pick" data-v="">+ Add another service, like ' + esc(f.tab === 'kinyozi' ? 'a car wash' : 'a haircut') + '</a>' : '';
-  const step1 = brandCard(BRAND[f.tab]).replace('class="bcard ', 'class="bcard' + swap + ' ') + '<section class="step"><h2><i>1</i>' + esc(PICK_HEAD[f.tab] || 'What do you need?') + '</h2>' + grid + lines + addMore + '</section>';
-  const step2 = fd.length ? '<section class="step"><h2><i>2</i>How?</h2>' + fd.map(d => '<div class="how"><span class="lbl"><span class="dc">' + esc(DEPT[d].code) + '</span>' + esc(deptName(d)) + '</span><div class="seg big">' + DEPT_FLOWS[d].map(fl => '<button data-act="flow" data-d="' + d + '" data-v="' + fl + '" aria-pressed="' + (flowOf(d) === fl) + '">' + esc(flowLabel(fl, d, 'customer')) + '</button>').join('') + '</div></div>').join('') + '</section>' : '';
+  const pics = PHOTOS[f.tab] ? '<div class="mini-gal' + swap + '">' + PHOTOS[f.tab].map((p, k) => ph(p, k === 0 ? 'big' : '')).join('') + '</div>' : '';
+  const step1 = brandCard(BRAND[f.tab]).replace('class="bcard ', 'class="bcard' + swap + ' ') + pics + '<section class="step">' + stH(1, 'check', PICK_HEAD[f.tab] || 'What do you need?') + grid + lines + addMore + '</section>';
+  const step2 = fd.length ? '<section class="step">' + stH(2, 'key', 'How?') + fd.map(d => '<div class="how"><span class="lbl"><span class="dc">' + ic(DEPT_IC[d] || 'check') + '</span>' + esc(deptName(d)) + '</span><div class="seg big pics">' + DEPT_FLOWS[d].map(fl => '<button data-act="flow" data-d="' + d + '" data-v="' + fl + '" aria-pressed="' + (flowOf(d) === fl) + '">' + ic(FLOW_IC[fl] || 'check') + '<span>' + esc(flowLabel(fl, d, 'customer')) + '</span></button>').join('') + '</div></div>').join('') + '</section>' : '';
   const days = []; for (let i = 0; i < 10; i++) { const d = ymd(addDays(new Date(), i)); if (slotsFor(d).length) days.push(d); }
   const slots = slotsFor(f.day);
   const valet = fd.some(d => flowOf(d) === 'valet');
   const dropOpts = f.slot ? slotsFor(f.day).filter(s => s > f.slot).concat(['20:00', '21:00']).filter((v, i, a) => a.indexOf(v) === i && v >= addH(f.slot, 2)) : [];
-  const step3 = fd.length ? '<section class="step"><h2><i>3</i>When?</h2><div class="days">' + days.map(d => { const x = fromYmd(d); return '<button class="chip" data-act="day" data-v="' + d + '" aria-pressed="' + (f.day === d) + '"><b>' + esc(d === today() ? 'Today' : d === ymd(addDays(new Date(), 1)) ? 'Tomorrow' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][x.getDay()]) + '</b><small>' + x.getDate() + ' ' + MON[x.getMonth()] + '</small></button>'; }).join('') + '</div>'
-    + '<div class="lbl">' + (valet ? 'Pickup time' : 'Time') + '</div><div class="slots">' + slots.map(s => '<button class="chip" data-act="slot" data-v="' + s + '" aria-pressed="' + (f.slot === s) + '">' + s + '</button>').join('') + '</div>'
-    + (valet && f.slot ? '<div class="field"><label for="b-drop">Bring it back by</label><select id="b-drop" data-f="drop"><option value="">Whenever it\'s ready</option>' + dropOpts.map(s => '<option' + (f.drop === s ? ' selected' : '') + '>' + s + '</option>').join('') + '</select></div>' : '') + '</section>' : '';
-  const step4 = anyTrip() ? '<section class="step"><h2><i>4</i>Where?</h2><div class="grid2"><div class="field"><label for="b-area">Area</label><select id="b-area" data-f="area" data-rerender><option value="">Choose your area</option>' + S.cat.zones.map(z => '<option value="' + esc(z.name) + '"' + (f.area === z.name ? ' selected' : '') + '>' + esc(z.name) + (+z.fee ? ' · KES ' + num(z.fee) + ' pickup' : ' · free pickup') + '</option>').join('') + '<option value="__other"' + (f.area === '__other' ? ' selected' : '') + '>Somewhere else</option></select></div>'
-    + (f.area === '__other' ? '<div class="field"><label for="b-areao">Area name</label><input id="b-areao" data-f="areaOther" value="' + esc(f.areaOther) + '" autocomplete="address-level2"></div>' : '<div></div>') + '</div>'
-    + '<div class="field"><label for="b-lm">Directions for the valet</label><input id="b-lm" data-f="landmark" value="' + esc(f.landmark) + '" placeholder="Estate, building, gate colour, house number" autocomplete="street-address"></div>'
-    + '<div class="row-btns"><button class="btn ghost sm" data-act="locate">' + (f.maps ? 'Update my location' : 'Share my location') + '</button>' + (f.maps ? '<span class="loc-ok">Location added</span>' : '<span class="muted small">Helps the valet find you</span>') + '</div></section>' : '';
+  const step3 = fd.length ? '<section class="step">' + stH(3, 'clock', 'When?') + '<div class="lbl">' + ic('calendar', 'lb-ic') + 'Day</div><div class="days">' + days.map(d => { const x = fromYmd(d); return '<button class="chip" data-act="day" data-v="' + d + '" aria-pressed="' + (f.day === d) + '"><b>' + esc(d === today() ? 'Today' : d === ymd(addDays(new Date(), 1)) ? 'Tomorrow' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][x.getDay()]) + '</b><small>' + x.getDate() + ' ' + MON[x.getMonth()] + '</small></button>'; }).join('') + '</div>'
+    + '<div class="lbl">' + ic('clock', 'lb-ic') + (valet ? 'Pickup time' : 'Time') + '</div><div class="slots">' + slots.map(s => '<button class="chip" data-act="slot" data-v="' + s + '" aria-pressed="' + (f.slot === s) + '">' + s + '</button>').join('') + '</div>'
+    + (valet && f.slot ? '<div class="field">' + lb('b-drop', 'truck', 'Bring it back by') + '<select id="b-drop" data-f="drop"><option value="">Whenever it\'s ready</option>' + dropOpts.map(s => '<option' + (f.drop === s ? ' selected' : '') + '>' + s + '</option>').join('') + '</select></div>' : '') + '</section>' : '';
+  const step4 = anyTrip() ? '<section class="step">' + stH(4, 'pin', 'Where?') + '<div class="grid2"><div class="field">' + lb('b-area', 'pin', 'Area') + '<select id="b-area" data-f="area" data-rerender><option value="">Choose your area</option>' + S.cat.zones.map(z => '<option value="' + esc(z.name) + '"' + (f.area === z.name ? ' selected' : '') + '>' + esc(z.name) + (+z.fee ? ' · KES ' + num(z.fee) + ' pickup' : ' · free pickup') + '</option>').join('') + '<option value="__other"' + (f.area === '__other' ? ' selected' : '') + '>Somewhere else</option></select></div>'
+    + (f.area === '__other' ? '<div class="field">' + lb('b-areao', 'pin', 'Area name') + '<input id="b-areao" data-f="areaOther" value="' + esc(f.areaOther) + '" autocomplete="address-level2"></div>' : '<div></div>') + '</div>'
+    + '<div class="field">' + lb('b-lm', 'home', 'Directions for the valet') + '<input id="b-lm" data-f="landmark" value="' + esc(f.landmark) + '" placeholder="Estate, building, gate colour, house number" autocomplete="street-address"></div>'
+    + '<div class="row-btns"><button class="btn ghost sm" data-act="locate">' + ic('pin') + (f.maps ? 'Update my location' : 'Share my location') + '</button>' + (f.maps ? '<span class="loc-ok">Location added</span>' : '<span class="muted small">Helps the valet find you</span>') + '</div></section>' : '';
   let n = anyTrip() ? 5 : 4;
   const veh = fd.some(d => DEPT[d].vehicle); const pcs = fd.some(d => DEPT[d].pieces);
   const myCars = S.portal ? (S.portal.items || []).filter(i => i.kind === 'vehicle') : [];
-  const step5 = (veh || pcs) ? '<section class="step"><h2><i>' + (n++) + '</i>' + (veh ? 'Your car' : 'Your items') + '</h2>'
+  const step5 = (veh || pcs) ? '<section class="step">' + stH(n++, veh ? 'car' : 'rug', veh ? 'Your car' : 'Your items')
     + (veh && myCars.length ? '<div class="vchips">' + myCars.map((v, i) => '<button class="vchip" data-act="car" data-i="' + i + '" aria-pressed="' + (plate(f.plate) === v.label) + '"><span class="plate">' + esc(v.label) + '</span>' + esc(v.details || '') + '</button>').join('') + '</div>' : '')
-    + (veh ? '<div class="grid3"><div class="field"><label for="b-plate">Number plate</label><input id="b-plate" data-f="plate" value="' + esc(f.plate) + '" placeholder="KDA 123B" autocapitalize="characters"></div><div class="field"><label for="b-make">Make and model</label><input id="b-make" data-f="make" value="' + esc(f.make) + '" placeholder="Toyota Axio"></div><div class="field"><label for="b-colour">Colour</label><input id="b-colour" data-f="colour" value="' + esc(f.colour) + '" placeholder="Silver"></div></div>' : '')
-    + (pcs ? '<div class="field"><label for="b-items">Describe the items</label><textarea id="b-items" data-f="items" rows="2" placeholder="2 carpets, one 8×10 grey and one 5×7 red.">' + esc(f.items) + '</textarea></div>' : '') + '</section>' : '';
-  const step6 = fd.length ? '<section class="step"><h2><i>' + (n++) + '</i>' + (f.portal ? 'Anything else?' : 'Your details') + '</h2>'
-    + (f.portal ? '' : '<div class="grid2"><div class="field"><label for="b-name">Your name</label><input id="b-name" data-f="name" value="' + esc(f.name) + '" autocomplete="name"></div><div class="field"><label for="b-phone">Phone (WhatsApp)</label><input id="b-phone" data-f="phone" value="' + esc(f.phone) + '" inputmode="tel" autocomplete="tel" placeholder="0712 345 678"></div></div>')
-    + '<div class="field"><label for="b-notes">Notes (optional)</label><textarea id="b-notes" data-f="notes" rows="2" placeholder="Anything we should know">' + esc(f.notes) + '</textarea></div>'
+    + (veh ? '<div class="grid3"><div class="field">' + lb('b-plate', 'plate', 'Number plate') + '<input id="b-plate" data-f="plate" value="' + esc(f.plate) + '" placeholder="KDA 123B" autocapitalize="characters"></div><div class="field">' + lb('b-make', 'car', 'Make and model') + '<input id="b-make" data-f="make" value="' + esc(f.make) + '" placeholder="Toyota Axio"></div><div class="field">' + lb('b-colour', 'drop', 'Colour') + '<input id="b-colour" data-f="colour" value="' + esc(f.colour) + '" placeholder="Silver"></div></div>' : '')
+    + (pcs ? '<div class="field">' + lb('b-items', 'note', 'Describe the items') + '<textarea id="b-items" data-f="items" rows="2" placeholder="2 carpets, one 8×10 grey and one 5×7 red.">' + esc(f.items) + '</textarea></div>' : '') + '</section>' : '';
+  const step6 = fd.length ? '<section class="step">' + stH(n++, f.portal ? 'note' : 'user', f.portal ? 'Anything else?' : 'Your details')
+    + (f.portal ? '' : '<div class="grid2"><div class="field">' + lb('b-name', 'user', 'Your name') + '<input id="b-name" data-f="name" value="' + esc(f.name) + '" autocomplete="name"></div><div class="field">' + lb('b-phone', 'phone', 'Phone (WhatsApp)') + '<input id="b-phone" data-f="phone" value="' + esc(f.phone) + '" inputmode="tel" autocomplete="tel" placeholder="0712 345 678"></div></div>')
+    + '<div class="field">' + lb('b-notes', 'note', 'Notes (optional)') + '<textarea id="b-notes" data-f="notes" rows="2" placeholder="Anything we should know">' + esc(f.notes) + '</textarea></div>'
     + (f.err ? '<div class="err" role="alert">' + esc(f.err) + '</div>' : '') + '</section>' : '';
   const myPlans = (S.cat.plans || []).filter(p => p.dept === f.tab);
-  const plans = !f.portal && myPlans.length ? '<section class="step" id="plans"><h2>Monthly packages</h2><p class="muted" style="margin:0">Pay once a month and save. Ask us on WhatsApp to join.</p><div class="plans">' + myPlans.map(p => '<div class="plan"><h3>' + esc(p.name) + '</h3><b class="pr">KES ' + num(p.price) + ' <small>/ ' + (p.days === 30 ? 'month' : p.days + ' days') + '</small></b><p>' + esc(p.perks || (p.allowance + ' visits')) + '</p>' + (bizWa() ? '<a class="btn ghost sm" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Ask to join</a>' : '') + '</div>').join('') + '</div></section>' : '';
+  const plans = !f.portal && myPlans.length ? '<section class="step" id="plans">' + stH(0, 'crown', 'Monthly packages') + '<p class="muted" style="margin:0">Pay once a month and save. Ask us on WhatsApp to join.</p><div class="plans">' + myPlans.map(p => '<div class="plan"><h3>' + esc(p.name) + '</h3><b class="pr">KES ' + num(p.price) + ' <small>/ ' + (p.days === 30 ? 'month' : p.days + ' days') + '</small></b><p>' + esc(p.perks || (p.allowance + ' visits')) + '</p>' + (bizWa() ? '<a class="btn ghost sm" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), 'Hi, I\'d like to join the ' + p.name + ' membership.')) + '">Ask to join</a>' : '') + '</div>').join('') + '</div></section>' : '';
   return hero + step1 + step2 + step3 + step4 + step5 + step6 + plans;
 }
 function addH(t, h) { const [a, b] = t.split(':').map(Number); return String(Math.min(23, a + h)).padStart(2, '0') + ':' + String(b).padStart(2, '0'); }
@@ -383,8 +404,8 @@ function viewDone() {
   return '<div class="done-card"><svg class="okmark" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg><span class="pill s-done">Booking received</span><h1>Thanks, ' + esc(first(d.name)) + '!</h1>'
     + '<div class="bigcode">' + esc(d.code) + '</div>'
     + '<p style="margin:0">' + esc(dayName(d.day)) + ' at ' + esc(d.slot) + '. We\'ll confirm on WhatsApp shortly.</p>'
-    + (bizWa() ? '<a class="btn wa lg" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), msg)) + '">Send it to us on WhatsApp</a><p class="muted small" style="margin:0">This gets you a faster confirmation.</p>' : '')
-    + '<div class="row-btns"><a class="btn primary" href="#t/' + esc(d.track_token) + '">Track your booking</a><button class="btn ghost" data-act="again">Book something else</button></div>'
+    + (bizWa() ? '<a class="btn wa lg" target="_blank" rel="noopener" href="' + esc(wa(bizWa(), msg)) + '">' + ic('chat') + 'Send it to us on WhatsApp</a><p class="muted small" style="margin:0">This gets you a faster confirmation.</p>' : '')
+    + '<div class="row-btns"><a class="btn primary" href="#t/' + esc(d.track_token) + '">' + ic('live') + 'Track your booking</a><button class="btn ghost" data-act="again">' + ic('calendar') + 'Book something else</button></div>'
     + '<p class="muted small" style="margin:0">Save the tracking link to check on your booking any time.</p></div>';
 }
 
@@ -407,7 +428,7 @@ function jobCard(j) {
   return '<article class="jcard"' + (b ? ' data-brand="' + b + '"' : '') + '><header>' + (b ? '<img class="bimg ' + b + '" src="' + img(BRANDS[b].mark) + '" alt="">' : '<span class="dc">' + esc(DEPT[j.dept].code) + '</span>') + '<b style="margin-right:auto">' + (b ? esc(BRANDS[b].name) + ' · ' : '') + esc(deptName(j.dept)) + '</b><span class="muted small">' + esc(j.code) + '</span></header>'
     + '<div class="status-big">' + esc(statusLabel(j.status, j, 'customer')) + '</div>'
     + (j.status !== 'cancelled' ? tracker(j, 'customer') : '')
-    + '<div class="jmeta"><span>' + esc(dayName(j.day)) + ' · ' + esc(t5(j.slot)) + '</span><span>' + esc(flowLabel(j.flow, j.dept, 'customer')) + '</span>' + (j.drop_slot ? '<span>Back by ' + esc(t5(j.drop_slot)) + '</span>' : '') + (who ? '<span>' + esc(who) + '</span>' : '') + '</div>'
+    + '<div class="jmeta"><span>' + ic('calendar') + esc(dayName(j.day)) + ' · ' + esc(t5(j.slot)) + '</span><span>' + ic(FLOW_IC[j.flow] || 'check') + esc(flowLabel(j.flow, j.dept, 'customer')) + '</span>' + (j.drop_slot ? '<span>' + ic('clock') + 'Back by ' + esc(t5(j.drop_slot)) + '</span>' : '') + (who ? '<span>' + ic('user') + esc(who) + '</span>' : '') + '</div>'
     + (j.items.length ? '<div class="vchips">' + j.items.map(i => '<span class="vchip" style="cursor:default">' + esc(i) + '</span>').join('') + '</div>' : '')
     + (j.tags.length ? '<div class="jmeta">Tags: ' + j.tags.map(t => '<span class="tagno">' + esc(t) + '</span>').join(' ') + '</div>' : '')
     + lines
@@ -419,7 +440,7 @@ function viewTrack() {
   const t = S.track; const codes = t.jobs.map(j => j.code).join(' + ');
   return '<div class="vh"><h1>Hi ' + esc(t.name || 'there') + '</h1><span class="sub">Booking ' + esc(codes) + '</span></div>'
     + t.jobs.map(jobCard).join('')
-    + '<div class="row-btns">' + (t.biz.whatsapp ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(wa(t.biz.whatsapp, 'Hi, about my booking ' + codes + ': ')) + '">Message us on WhatsApp</a>' : '')
+    + '<div class="row-btns">' + (t.biz.whatsapp ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(wa(t.biz.whatsapp, 'Hi, about my booking ' + codes + ': ')) + '">' + ic('chat') + 'Message us on WhatsApp</a>' : '')
     + (t.can_cancel ? '<button class="btn danger" data-act="cancel" data-confirm="Tap again to cancel">Cancel booking</button>' : '') + '<a class="btn ghost" href="' + esc(links.home) + '">Book something else</a></div>'
     + '<p class="muted small" style="margin:0">This page updates on its own. Last checked ' + esc(hm(new Date())) + '.</p>';
 }
@@ -441,7 +462,7 @@ function viewMe() {
   const c = p.customer; const act = p.memberships.filter(m => m.active); const old = p.memberships.filter(m => !m.active).slice(0, 2);
   return '<div class="vh"><h1>Hi ' + esc(first(c.name)) + '</h1><span class="sub">' + p.stats.visits + (p.stats.visits === 1 ? ' visit' : ' visits') + '</span></div>'
     + act.map(memberCard).join('')
-    + '<div class="row-btns"><a class="btn accent lg" href="#book/' + esc(S.token) + '">Book again</a>' + (p.biz.whatsapp ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(wa(p.biz.whatsapp, 'Hi, it\'s ' + c.name + '. ')) + '">WhatsApp us</a>' : '') + '</div>'
+    + '<div class="row-btns"><a class="btn accent lg" href="#book/' + esc(S.token) + '">' + ic('calendar') + 'Book again</a>' + (p.biz.whatsapp ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(wa(p.biz.whatsapp, 'Hi, it\'s ' + c.name + '. ')) + '">' + ic('chat') + 'WhatsApp us</a>' : '') + '</div>'
     + (p.upcoming.length ? '<section class="card"><h3>Coming up</h3><div class="list">' + p.upcoming.map(j => '<a class="crow" style="grid-template-columns:auto minmax(0,1fr) auto;text-decoration:none;color:inherit" href="#t/' + esc(j.track_token) + '"><span class="dc">' + esc(DEPT[j.dept].code) + '</span><span class="cinfo"><b>' + esc(dayName(j.day)) + ' · ' + esc(t5(j.slot)) + '</b><span class="js">' + esc(j.lines.map(l => l.name).join(', ')) + '</span></span><span class="pill s-' + groupOf(j.status) + '">' + esc(statusLabel(j.status, j, 'customer')) + '</span></a>').join('') + '</div></section>' : '')
     + (p.items.length ? '<section class="card"><h3>Your cars and items</h3><div class="vchips">' + p.items.map(i => '<span class="vchip" style="cursor:default">' + (i.kind === 'vehicle' ? '<span class="plate">' + esc(i.label) + '</span>' + esc(i.details || '') : esc(i.label)) + (i.last ? ' · last ' + esc(dayName(i.last).toLowerCase()) : '') + '</span>').join('') + '</div></section>' : '')
     + '<section class="card"><h3>History</h3>' + (p.history.length ? '<table class="t"><tbody>' + p.history.map(j => '<tr><td>' + esc(longDay(j.day)) + '</td><td class="wrap-cell">' + esc(j.lines.map(l => l.name).join(', ')) + '</td><td class="num">' + num(j.total) + '</td></tr>').join('') + '</tbody></table>' : '<p class="muted" style="margin:0">Your finished visits will show here.</p>') + '</section>'
